@@ -7,203 +7,66 @@
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f4f6f8; color: #333; padding: 20px; }
+        
+        header { margin-bottom: 20px; }
+        header h1 { font-size: 1.8rem; color: #1a202c; margin-bottom: 6px; }
+        
+        .header-desc {
+            font-size: 0.95rem;
+            color: #4a5568;
+            max-width: 900px;
+            line-height: 1.4;
+            margin-bottom: 8px;
         }
 
-        body {
-            background-color: #f4f6f8;
-            color: #333;
-            padding: 20px;
+        .author-bio {
+            font-size: 0.85rem;
+            color: #718096;
+            font-style: italic;
         }
 
-        header {
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            color: #1a202c;
-        }
-
-        /* Ticker Banner for Macro Measures */
-        .ticker-banner {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-        }
-
-        .ticker-card {
-            background: #ffffff;
-            border-radius: 6px;
-            padding: 12px 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-            flex: 1;
-            min-width: 180px;
-        }
-
-        /* Dashboard Grid Layout */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-        }
-
-        /* Card Modules */
-        .card {
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-
-        .card h2 {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: #2d3748;
-            border-bottom: 2px solid #edf2f7;
-            padding-bottom: 8px;
-        }
-
-        /* Grid Spans */
+        .ticker-banner { display: flex; gap: 15px; margin-bottom: 20px; overflow-x: auto; }
+        .ticker-card { background: #ffffff; border-radius: 6px; padding: 12px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; flex: 1; min-width: 170px; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+        .card { background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .card h2 { font-size: 1.1rem; margin-bottom: 15px; color: #2d3748; border-bottom: 2px solid #edf2f7; padding-bottom: 8px; }
+        
         .col-3 { grid-column: span 3; }
         .col-4 { grid-column: span 4; }
         .col-6 { grid-column: span 6; }
         .col-8 { grid-column: span 8; }
         .col-12 { grid-column: span 12; }
-
-        /* Outlook Box Styling */
-        .outlook-box {
-            background: linear-gradient(135deg, #ebf8ff 0%, #ffffff 100%);
-            border-left: 4px solid #3182ce;
-        }
-
-        .outlook-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .badge-positive {
-            background-color: #c6f6d5;
-            color: #22543d;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 12px;
-            text-transform: uppercase;
-        }
-
-        .outlook-summary {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #2d3748;
-            margin-bottom: 15px;
-        }
-
-        .outlook-bullets {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 12px;
-        }
-
-        .outlook-bullet-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #4a5568;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .outlook-bullet-text {
-            font-size: 0.85rem;
-            color: #4a5568;
-        }
-
-        /* News Article Styling */
-        .news-item {
-            margin-bottom: 15px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #edf2f7;
-        }
-
-        .news-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .news-title {
-            font-weight: 600;
-            text-decoration: none;
-            color: #2b6cb0;
-        }
-
-        .news-title:hover {
-            text-decoration: underline;
-        }
-
-        .news-meta {
-            font-size: 0.8rem;
-            color: #718096;
-            margin-top: 4px;
-        }
-
-        .news-snippet {
-            font-size: 0.9rem;
-            color: #4a5568;
-            margin-top: 6px;
-        }
-
-        .news-tag {
-            display: inline-block;
-            background: #edf2f7;
-            color: #4a5568;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-right: 5px;
-            font-weight: 600;
-        }
-
-        /* Metric Highlights */
-        .metric {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #2b6cb0;
-        }
-
-        .metric-label {
-            font-size: 0.85rem;
-            color: #718096;
-        }
-
-        .metric-sub {
-            font-size: 0.75rem;
-            color: #38a169;
-            margin-top: 4px;
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 900px) {
-            .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; }
-            .ticker-banner { flex-direction: column; }
-            .outlook-bullets { grid-template-columns: 1fr; }
-        }
+        
+        .outlook-box { background: linear-gradient(135deg, #ebf8ff 0%, #ffffff 100%); border-left: 4px solid #3182ce; }
+        .outlook-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .badge-positive { background-color: #c6f6d5; color: #22543d; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
+        .outlook-summary { font-size: 0.95rem; line-height: 1.5; color: #2d3748; margin-bottom: 15px; }
+        .outlook-bullets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+        .outlook-bullet-title { font-size: 0.8rem; font-weight: 700; color: #4a5568; text-transform: uppercase; margin-bottom: 4px; }
+        .outlook-bullet-text { font-size: 0.85rem; color: #4a5568; }
+        
+        .news-item { margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #edf2f7; }
+        .news-item:last-child { border-bottom: none; margin-bottom: 0; }
+        .news-title { font-weight: 600; text-decoration: none; color: #2b6cb0; }
+        .news-title:hover { text-decoration: underline; }
+        .news-meta { font-size: 0.8rem; color: #718096; margin-top: 4px; }
+        .news-tag { display: inline-block; background: #edf2f7; color: #4a5568; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-right: 5px; font-weight: 600; }
+        
+        .metric { font-size: 1.8rem; font-weight: bold; color: #2b6cb0; }
+        .metric-label { font-size: 0.85rem; color: #718096; }
+        .metric-sub { font-size: 0.75rem; color: #38a169; margin-top: 4px; }
+        
+        @media (max-width: 900px) { .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; } .ticker-banner { flex-direction: column; } .outlook-bullets { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Medical Imaging AI & Health Macro Dashboard</h1>
+        <p class="header-desc">An executive intelligence dashboard monitoring real-time industry news, regulatory trends, macroeconomic indicators, and diagnostic adoption across the medical imaging AI sector.</p>
+        <p class="author-bio">Curated by Felix Beacher, PhD, an experienced market analyst specializing in AI in medical imaging.</p>
     </header>
 
     <!-- Top Macro Indicators Ticker -->
@@ -227,6 +90,11 @@
             <div class="metric-label">NHS Imaging Backlog</div>
             <div class="metric">612K</div>
             <div class="metric-sub">Patients Awaiting Scans</div>
+        </div>
+        <div class="ticker-card">
+            <div class="metric-label">Cloud Inference Index</div>
+            <div class="metric">-8.5%</div>
+            <div class="metric-sub">Compute Cost YoY</div>
         </div>
     </div>
 
@@ -258,20 +126,25 @@
         </div>
 
         <!-- Key Sector Metrics -->
-        <div class="card col-4">
-            <div class="metric-label">FDA / CE AI Clearances (YTD)</div>
+        <div class="card col-3">
+            <div class="metric-label">FDA / CE Clearances (YTD)</div>
             <div class="metric">142</div>
             <div class="metric-sub">+18% vs Previous Year</div>
         </div>
-        <div class="card col-4">
+        <div class="card col-3">
             <div class="metric-label">Radiologist Vacancy Rate</div>
             <div class="metric">12.4%</div>
             <div class="metric-sub">High Workforce Deficit</div>
         </div>
-        <div class="card col-4">
-            <div class="metric-label">AI Penetration (MRI/CT)</div>
-            <div class="metric">28.5%</div>
-            <div class="metric-sub">Clinical Workflow Adoption</div>
+        <div class="card col-3">
+            <div class="metric-label">Reimbursement Adoption</div>
+            <div class="metric">34.2%</div>
+            <div class="metric-sub">Hospitals with Active Billing</div>
+        </div>
+        <div class="card col-3">
+            <div class="metric-label">Prospective Clinical Validation</div>
+            <div class="metric">86</div>
+            <div class="metric-sub">Peer-Reviewed Papers YTD</div>
         </div>
 
         <!-- Graph Unit 1: Approvals vs VC Funding -->
@@ -283,23 +156,8 @@
         <!-- Text Unit: Targeted News Feed -->
         <div class="card col-4">
             <h2>Latest Industry Headlines</h2>
-            
-            <div class="news-item">
-                <a href="#" class="news-title">MHRA Grants Clearance for AI Stroke Detection Tool</a>
-                <div class="news-meta"><span class="news-tag">REGULATORY</span> HealthTech Alert • 15 mins ago</div>
-                <div class="news-snippet">A new triage algorithm for head CT scans promises to cut turnaround times by up to 40% in emergency departments...</div>
-            </div>
-
-            <div class="news-item">
-                <a href="#" class="news-title">Major OEM Acquires Niche Cardiac MRI Startup</a>
-                <div class="news-meta"><span class="news-tag">M&A</span> Imaging World • 1 hour ago</div>
-                <div class="news-snippet">The £220m deal highlights growing enterprise demand for integrated diagnostic platforms across Europe...</div>
-            </div>
-
-            <div class="news-item">
-                <a href="#" class="news-title">Central Bank Policy Shift Impacting Hospital CapEx</a>
-                <div class="news-meta"><span class="news-tag">MACRO</span> Financial Times • 3 hours ago</div>
-                <div class="news-snippet">Higher interest rates continue to delay capital equipment leasing cycles across regional health trusts...</div>
+            <div id="news-feed-container">
+                <!-- NEWS_ITEMS_PLACEHOLDER -->
             </div>
         </div>
 
