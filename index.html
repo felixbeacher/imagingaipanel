@@ -10,7 +10,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f4f6f8; color: #333; padding: 20px; }
         
-        header { margin-bottom: 20px; }
+        header { 
+            margin-bottom: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
         header h1 { font-size: 1.8rem; color: #1a202c; margin-bottom: 6px; }
         
         .header-desc {
@@ -25,6 +32,36 @@
             font-size: 0.85rem;
             color: #718096;
             font-style: italic;
+        }
+
+        .region-filter-container {
+            background: #ffffff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .region-filter-container label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #2d3748;
+            text-transform: uppercase;
+        }
+
+        .region-filter-container select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            color: #2b6cb0;
+            font-weight: 600;
+            background-color: #f8fafc;
+            cursor: pointer;
+            outline: none;
         }
 
         .ticker-banner { display: flex; gap: 15px; margin-bottom: 20px; overflow-x: auto; }
@@ -55,18 +92,41 @@
         .news-tag { display: inline-block; background: #edf2f7; color: #4a5568; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-right: 5px; font-weight: 600; }
         
         .metric { font-size: 1.8rem; font-weight: bold; color: #2b6cb0; }
-        .metric-label { font-size: 0.85rem; color: #718096; }
-        .metric-sub { font-size: 0.75rem; color: #38a169; margin-top: 4px; }
+        .metric-label { font-size: 0.85rem; font-weight: 600; color: #2d3748; }
+        .metric-sub { font-size: 0.75rem; color: #38a169; margin-top: 2px; margin-bottom: 6px; }
+        .metric-desc { font-size: 0.75rem; color: #718096; line-height: 1.35; border-top: 1px solid #f0f4f8; padding-top: 6px; margin-top: 4px; }
         
+        footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
         @media (max-width: 900px) { .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; } .ticker-banner { flex-direction: column; } .outlook-bullets { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Medical Imaging AI & Macroeconomic Dashboard</h1>
-        <p class="header-desc">An executive intelligence dashboard, using AI for real-time monitoring of industry news, regulatory trends, macroeconomic indicators, and adoption in medical imaging AI.</p>
-        <p class="author-bio">Designed by Felix Beacher, PhD, an experienced market analyst in medical imaging AI.</p>
+        <div>
+            <h1>Medical Imaging AI & Macroeconomic Dashboard</h1>
+            <p class="header-desc">An executive intelligence dashboard, using AI for real-time monitoring of industry news, regulatory trends, macroeconomic indicators, and adoption in medical imaging AI.</p>
+            <p class="author-bio">Created and managed by Felix Beacher, PhD.</p>
+        </div>
+        <div class="region-filter-container">
+            <label for="regionSelect">Region View:</label>
+            <select id="regionSelect">
+                <option value="global">Global (Whole World)</option>
+                <option value="northAmerica">North America</option>
+                <option value="europe">Europe</option>
+                <option value="asia">Asia</option>
+                <option value="middleEast">Middle East</option>
+                <option value="southAmerica">South America</option>
+            </select>
+        </div>
     </header>
 
     <!-- Top Macro Indicators Ticker -->
@@ -75,26 +135,31 @@
             <div class="metric-label">UK Base Rate</div>
             <div class="metric">4.50%</div>
             <div class="metric-sub">Central Bank Rate</div>
+            <p class="metric-desc">Sets the baseline cost of borrowing, influencing healthcare provider capital budgets and overall deal timelines.</p>
         </div>
         <div class="ticker-card">
             <div class="metric-label">Healthcare Inflation</div>
             <div class="metric">3.2%</div>
             <div class="metric-sub">YoY Services CPI</div>
+            <p class="metric-desc">Measures the rising operational costs in healthcare, driving trusts to seek automated efficiency gains.</p>
         </div>
         <div class="ticker-card">
             <div class="metric-label">MedTech VC Funding</div>
             <div class="metric">£1.4B</div>
             <div class="metric-sub">+12% Q2 Capital Inflow</div>
+            <p class="metric-desc">Reflects venture capital confidence and liquidity available for early-to-mid stage medical technology innovation.</p>
         </div>
         <div class="ticker-card">
             <div class="metric-label">NHS Imaging Backlog</div>
             <div class="metric">612K</div>
             <div class="metric-sub">Patients Awaiting Scans</div>
+            <p class="metric-desc">Highlights the total volume of outstanding scans, demonstrating the urgency for AI triage and processing solutions.</p>
         </div>
         <div class="ticker-card">
             <div class="metric-label">Cloud Inference Index</div>
             <div class="metric">-8.5%</div>
             <div class="metric-sub">Compute Cost YoY</div>
+            <p class="metric-desc">Tracks the cost of running cloud-based AI algorithms, where falling costs improve vendor operating margins.</p>
         </div>
     </div>
 
@@ -128,23 +193,27 @@
         <!-- Key Sector Metrics -->
         <div class="card col-3">
             <div class="metric-label">FDA / CE Clearances (YTD)</div>
-            <div class="metric">142</div>
+            <div class="metric" id="clearances-metric">142</div>
             <div class="metric-sub">+18% vs Previous Year</div>
+            <p class="metric-desc">Tracks regulatory market approvals in the US and Europe, signalling algorithm maturation and product launch speed.</p>
         </div>
         <div class="card col-3">
             <div class="metric-label">Radiologist Vacancy Rate</div>
             <div class="metric">12.4%</div>
             <div class="metric-sub">High Workforce Deficit</div>
+            <p class="metric-desc">Measures unfilled clinical posts, underscoring the structural need for automated productivity solutions.</p>
         </div>
         <div class="card col-3">
             <div class="metric-label">Reimbursement Adoption</div>
             <div class="metric">34.2%</div>
             <div class="metric-sub">Hospitals with Active Billing</div>
+            <p class="metric-desc">Indicates the percentage of providers successfully claiming active tariffs or codes for AI-assisted diagnostic procedures.</p>
         </div>
         <div class="card col-3">
             <div class="metric-label">Prospective Clinical Validation</div>
             <div class="metric">86</div>
             <div class="metric-sub">Peer-Reviewed Papers YTD</div>
+            <p class="metric-desc">Quantifies real-world clinical evidence publications needed to convince hospital procurement committees.</p>
         </div>
 
         <!-- Graph Unit 1: Approvals vs VC Funding -->
@@ -165,6 +234,9 @@
         <div class="card col-6">
             <h2>AI Clearances by Imaging Modality</h2>
             <canvas id="modalityChart"></canvas>
+            <p class="metric-desc" style="margin-top: 15px;">
+                CT and MRI account for over 60% of overall regulatory clearances due to high scan complexity, heavy clinical workloads, and strong reimbursement coverage. Emerging modalities like Digital Pathology and Point-of-Care Ultrasound show accelerated relative growth as algorithms move beyond traditional cross-sectional imaging.
+            </p>
         </div>
 
         <!-- Text Unit: Key Driver Breakdown -->
@@ -183,17 +255,61 @@
 
     </div>
 
+    <footer>
+        &copy; 2026 Felix Beacher. All rights reserved.
+    </footer>
+
     <script>
+        // Structured Regional Dataset
+        const regionData = {
+            global: {
+                clearances: [18, 24, 29, 35, 40, 48],
+                vcFunding: [210, 280, 250, 310, 390, 420],
+                modalities: [35, 28, 20, 12, 5],
+                totalClearances: "142"
+            },
+            northAmerica: {
+                clearances: [8, 11, 14, 17, 20, 24],
+                vcFunding: [110, 140, 130, 160, 200, 210],
+                modalities: [38, 26, 18, 12, 6],
+                totalClearances: "68"
+            },
+            europe: {
+                clearances: [5, 7, 8, 10, 11, 14],
+                vcFunding: [60, 80, 70, 85, 110, 120],
+                modalities: [32, 30, 22, 11, 5],
+                totalClearances: "43"
+            },
+            asia: {
+                clearances: [3, 4, 5, 6, 7, 8],
+                vcFunding: [30, 45, 35, 45, 55, 65],
+                modalities: [30, 25, 25, 15, 5],
+                totalClearances: "21"
+            },
+            middleEast: {
+                clearances: [1, 1, 1, 1, 1, 1],
+                vcFunding: [7, 10, 10, 12, 15, 15],
+                modalities: [40, 20, 20, 10, 10],
+                totalClearances: "6"
+            },
+            southAmerica: {
+                clearances: [1, 1, 1, 1, 1, 1],
+                vcFunding: [3, 5, 5, 8, 10, 10],
+                modalities: [35, 25, 25, 10, 5],
+                totalClearances: "4"
+            }
+        };
+
         // Line Chart: Approvals vs VC Funding
         const ctxApprovals = document.getElementById('approvalsChart').getContext('2d');
-        new Chart(ctxApprovals, {
+        const approvalsChart = new Chart(ctxApprovals, {
             type: 'line',
             data: {
                 labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 (Prev)', 'Q2 (Current)'],
                 datasets: [
                     {
                         label: 'AI Regulatory Clearances',
-                        data: [18, 24, 29, 35, 40, 48],
+                        data: regionData.global.clearances,
                         borderColor: '#3182ce',
                         backgroundColor: 'rgba(49, 130, 206, 0.1)',
                         tension: 0.3,
@@ -201,7 +317,7 @@
                     },
                     {
                         label: 'VC Funding (£ Millions)',
-                        data: [210, 280, 250, 310, 390, 420],
+                        data: regionData.global.vcFunding,
                         borderColor: '#38a169',
                         tension: 0.3,
                         fill: false,
@@ -232,12 +348,12 @@
 
         // Doughnut Chart: Modality Distribution
         const ctxModality = document.getElementById('modalityChart').getContext('2d');
-        new Chart(ctxModality, {
+        const modalityChart = new Chart(ctxModality, {
             type: 'doughnut',
             data: {
                 labels: ['CT Scans', 'MRI', 'X-Ray / Mammography', 'Ultrasound', 'Pathology'],
                 datasets: [{
-                    data: [35, 28, 20, 12, 5],
+                    data: regionData.global.modalities,
                     backgroundColor: ['#2b6cb0', '#319795', '#38a169', '#d69e2e', '#e53e3e']
                 }]
             },
@@ -245,6 +361,23 @@
                 responsive: true,
                 plugins: { legend: { position: 'bottom' } }
             }
+        });
+
+        // Dropdown Event Listener to update charts and metric card dynamically
+        document.getElementById('regionSelect').addEventListener('change', (e) => {
+            const selectedRegion = regionData[e.target.value];
+
+            // Update Approvals vs VC Funding Chart
+            approvalsChart.data.datasets[0].data = selectedRegion.clearances;
+            approvalsChart.data.datasets[1].data = selectedRegion.vcFunding;
+            approvalsChart.update();
+
+            // Update Modality Chart
+            modalityChart.data.datasets[0].data = selectedRegion.modalities;
+            modalityChart.update();
+
+            // Update FDA / CE Clearances Metric Card
+            document.getElementById('clearances-metric').innerText = selectedRegion.totalClearances;
         });
     </script>
 </body>
