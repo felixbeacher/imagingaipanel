@@ -80,9 +80,52 @@
         .outlook-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .badge-positive { background-color: #c6f6d5; color: #22543d; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
         .outlook-summary { font-size: 0.95rem; line-height: 1.5; color: #2d3748; margin-bottom: 15px; }
-        .outlook-bullets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; border-top: 1px solid #e2e8f0; padding-top: 12px; }
-        .outlook-bullet-title { font-size: 0.8rem; font-weight: 700; color: #4a5568; text-transform: uppercase; margin-bottom: 4px; }
-        .outlook-bullet-text { font-size: 0.85rem; color: #4a5568; }
+        
+        /* Updated Grid Layout for 4 Drivers and 4 Headwinds */
+        .outlook-factors-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+        
+        .factor-column h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .drivers-column h3 { color: #276749; }
+        .headwinds-column h3 { color: #9b2c2c; }
+
+        .factor-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .factor-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .factor-card-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .factor-card-text {
+            font-size: 0.8rem;
+            color: #4a5568;
+            line-height: 1.35;
+        }
         
         .news-item { margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #edf2f7; }
         .news-item:last-child { border-bottom: none; margin-bottom: 0; }
@@ -107,7 +150,12 @@
             color: #718096;
         }
 
-        @media (max-width: 900px) { .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; } .ticker-banner { flex-direction: column; } .outlook-bullets { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { 
+            .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; } 
+            .ticker-banner { flex-direction: column; } 
+            .outlook-factors-grid { grid-template-columns: 1fr; }
+            .factor-list { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -131,43 +179,37 @@
         </div>
     </header>
 
-    <!-- Top Macro Indicators Ticker -->
+    <!-- Top Macro Indicators Ticker (Dynamic) -->
     <div class="ticker-banner">
         <div class="ticker-card">
-            <div class="metric-label">UK Base Rate</div>
-            <div class="metric">
-                <a href="https://www.bankofengland.co.uk/monetary-policy/bank-rate" target="_blank" rel="noopener noreferrer">4.50%</a>
-            </div>
-            <div class="metric-sub">Central Bank Rate</div>
-            <p class="metric-desc">Sets the baseline cost of borrowing, influencing healthcare provider capital budgets and overall deal timelines.</p>
+            <div class="metric-label" id="ticker1-label">Central Bank Policy</div>
+            <div class="metric" id="ticker1-val">3.85%</div>
+            <div class="metric-sub" id="ticker1-sub">G7 Weighted Avg</div>
+            <p class="metric-desc" id="ticker1-desc">Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems.</p>
         </div>
         <div class="ticker-card">
-            <div class="metric-label">Healthcare Inflation</div>
-            <div class="metric">
-                <a href="https://www.ons.gov.uk/economy/inflationandpriceindices" target="_blank" rel="noopener noreferrer">3.2%</a>
-            </div>
-            <div class="metric-sub">YoY Services CPI</div>
-            <p class="metric-desc">Measures the rising operational costs in healthcare, driving trusts to seek automated efficiency gains.</p>
+            <div class="metric-label" id="ticker2-label">Healthcare Inflation</div>
+            <div class="metric" id="ticker2-val">3.8%</div>
+            <div class="metric-sub" id="ticker2-sub">Global Services CPI</div>
+            <p class="metric-desc" id="ticker2-desc">Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains.</p>
         </div>
         <div class="ticker-card">
-            <div class="metric-label">MedTech VC Funding</div>
-            <div class="metric">£1.4B</div>
-            <div class="metric-sub">+12% Q2 Capital Inflow</div>
-            <p class="metric-desc">Reflects venture capital confidence and liquidity available for early-to-mid stage medical technology innovation.</p>
+            <div class="metric-label" id="ticker3-label">MedTech Index (XLV)</div>
+            <div class="metric" id="ticker3-val">$142.5 (XLV)</div>
+            <div class="metric-sub" id="ticker3-sub">Sector Benchmark</div>
+            <p class="metric-desc" id="ticker3-desc">Reflects healthcare sector equity valuations and broader investment appetite.</p>
         </div>
         <div class="ticker-card">
-            <div class="metric-label">NHS Imaging Backlog</div>
-            <div class="metric">
-                <a href="https://www.england.nhs.uk/statistics/statistical-work-areas/diagnostics-waiting-times-and-activity/" target="_blank" rel="noopener noreferrer">612K</a>
-            </div>
-            <div class="metric-sub">Patients Awaiting Scans</div>
-            <p class="metric-desc">Highlights the total volume of outstanding scans, demonstrating the urgency for AI triage and processing solutions.</p>
+            <div class="metric-label" id="ticker4-label">Imaging Demand Backlog</div>
+            <div class="metric" id="ticker4-val">4.2M</div>
+            <div class="metric-sub" id="ticker4-sub">Est. Global Pending Scans</div>
+            <p class="metric-desc" id="ticker4-desc">Highlights worldwide clinical backlog volume, underscoring the need for automated triage.</p>
         </div>
         <div class="ticker-card">
-            <div class="metric-label">Cloud Inference Index</div>
-            <div class="metric">-8.5%</div>
-            <div class="metric-sub">Compute Cost YoY</div>
-            <p class="metric-desc">Tracks the cost of running cloud-based AI algorithms, where falling costs improve vendor operating margins.</p>
+            <div class="metric-label" id="ticker5-label">Cloud Inference Index</div>
+            <div class="metric" id="ticker5-val">-8.5%</div>
+            <div class="metric-sub" id="ticker5-sub">Compute Cost YoY</div>
+            <p class="metric-desc" id="ticker5-desc">Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins.</p>
         </div>
     </div>
 
@@ -182,18 +224,52 @@
             <p class="outlook-summary">
                 The medical imaging AI sector is transitioning from algorithm validation to large-scale clinical integration. Structural workforce shortages in radiology and growing scan backlogs provide strong demand resilience against wider macroeconomic headwinds. High central bank interest rates continue to extend capital purchasing cycles, but adoption is sustained by clear reimbursement pathway expansions and integrated platform partnerships with major OEMs.
             </p>
-            <div class="outlook-bullets">
-                <div>
-                    <div class="outlook-bullet-title">Primary Growth Driver</div>
-                    <div class="outlook-bullet-text">Severe diagnostic workforce deficits encouraging health trusts to mandate automated triage tools.</div>
+            
+            <div class="outlook-factors-grid">
+                <!-- 4 Key Growth Drivers -->
+                <div class="factor-column drivers-column">
+                    <h3>Primary Growth Drivers</h3>
+                    <div class="factor-list">
+                        <div class="factor-card">
+                            <div class="factor-card-title">Workforce Shortages</div>
+                            <div class="factor-card-text">Severe radiologist deficits forcing trusts to deploy automated triage and assistance tools.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Reimbursement Expansion</div>
+                            <div class="factor-card-text">New dedicated CPT and national health service billing codes unlocking direct provider revenue.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">OEM Platform Integration</div>
+                            <div class="factor-card-text">Major PACS and imaging vendors bundling AI directly into hardware software stacks.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Clinical Evidence Growth</div>
+                            <div class="factor-card-text">Expanding prospective validation studies demonstrating clear ROI and diagnostic accuracy gains.</div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <div class="outlook-bullet-title">Key Headwind</div>
-                    <div class="outlook-bullet-text">Elevated cost of capital dampening hospital CapEx budgets and slowing enterprise software deals.</div>
-                </div>
-                <div>
-                    <div class="outlook-bullet-title">Strategic Catalyst</div>
-                    <div class="outlook-bullet-text">Expansion of dedicated CPT and national health service reimbursement tariffs for AI-assisted scans.</div>
+
+                <!-- 4 Key Headwinds -->
+                <div class="factor-column headwinds-column">
+                    <h3>Key Sector Headwinds</h3>
+                    <div class="factor-list">
+                        <div class="factor-card">
+                            <div class="factor-card-title">Elevated Cost of Capital</div>
+                            <div class="factor-card-text">High interest rates stretching hospital procurement cycles and dampening venture capital.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">IT Integration Friction</div>
+                            <div class="factor-card-text">Complex hospital IT architecture and cybersecurity requirements delaying deployment timelines.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Regulatory Scrubbing</div>
+                            <div class="factor-card-text">Stricter post-market surveillance demands increasing post-clearance compliance overheads.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Hospital CapEx Pressure</div>
+                            <div class="factor-card-text">Tight public and private healthcare budgets forcing tough prioritization against core infrastructure.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -203,7 +279,7 @@
             <div class="metric-label">FDA / CE Clearances (YTD)</div>
             <div class="metric" id="clearances-metric">142</div>
             <div class="metric-sub">+18% vs Previous Year</div>
-            <p class="metric-desc">Tracks regulatory market approvals in the US and Europe, signalling algorithm maturation and product launch speed.</p>
+            <p class="metric-desc">Tracks regulatory market approvals (openFDA live data), signalling algorithm maturation speed.</p>
         </div>
         <div class="card col-3">
             <div class="metric-label">Radiologist Vacancy Rate</div>
@@ -215,7 +291,7 @@
             <div class="metric-label">Reimbursement Adoption</div>
             <div class="metric">34.2%</div>
             <div class="metric-sub">Hospitals with Active Billing</div>
-            <p class="metric-desc">Indicates the percentage of providers successfully claiming active tariffs or codes for AI-assisted diagnostic procedures.</p>
+            <p class="metric-desc">Indicates the percentage of providers successfully claiming active tariffs or codes for AI-assisted procedures.</p>
         </div>
         <div class="card col-3">
             <div class="metric-label">Prospective Clinical Validation</div>
@@ -234,27 +310,7 @@
         <div class="card col-4">
             <h2>Latest Industry Headlines</h2>
             <div id="news-feed-container">
-                
-        <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMigwFBVV95cUxPaDJqZWFCTlN2b1VuME83azZ3NXBRUU5hMFZjdEZRem02Q3paQ2hLbUwtU0xPY0JOeUFqVWFNOUhYZnJqVy1McjluYTNsQ0FJZDlYRTdmT0cwUFRMTHAzOHFIYUZGM3p5REVNVEFLMS1XRlN0cGZRaDM4NHdiRjh1cjVORQ?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">New AI methods make medical image analysis more reliable - Medical Xpress</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> Medical Xpress</div>
-        </div>
-        
-        <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxONTJkUDhWNFB2Q2pTWkdnbGpyWThYWFNtZWo2cWhkeU95WFdXMWVTMU82aTNHU21tQVl5T3NWLXYxbTFIWVZXTTFWNWxWcVZkX29YOHVfOU1ubm53WHNQbkl0TEhYc3RDbTQwNXNvczdNZE1jNnRBRWhyXzMxOHdNczJJWGRQYlV4LXkzNG5telFlWDhMMEVnd3BQY2h2YjA3SF9YZUpjcjA?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">New Advances in Early Disease Detection: What Patients Should Know- Expert View by Spherical Insights - Spherical Insights</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> Spherical Insights</div>
-        </div>
-        
-        <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxNODhQNm1zT2tfWlg2SDg0M1NBeDA2SlZ2Z2o4Nnd1SkdUa0RJRF9aUVFIUTc4T2JtbWMwME4wWHF0SWR2azh1bVhzN1prTGF1eFlKa0lTODNmWEU1Q1lCZnkwVEFuWmxHQllCN2U2Z0s5Q2FQTTVXRnE2WWpBVkZCNXRXa0E?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">The evolving role of phantom-based QA in medical imaging - healthcare-in-europe.com</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> healthcare-in-europe.com</div>
-        </div>
-        
-        <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMikgFBVV95cUxOQXZvb3dieHRLWUIxSnJ3TWQzUnpiQzIxM1lhcGpWVTd2aUFJdnZielRPOWtBYWd3RHN0OUNfd0RDMXRxV2dGVnl5N2FrMGRJOEhsQzY0LXE4elgyMy1FZ1pGS1k1UkV2WlNjXy16aXBNalpCanFTZXlLZU1WMTF4eE1jb1JEcEdLRWQ2dk8wWERGdw?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">AI medical imaging market set for rapid growth - EMJ</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> EMJ</div>
-        </div>
-        
+                <!-- NEWS_ITEMS_PLACEHOLDER -->
             </div>
         </div>
 
@@ -288,39 +344,68 @@
     </footer>
 
     <script>
-        // Structured Regional Dataset
         const regionData = {
             global: {
+                ticker1: { label: "Central Bank Policy", val: "3.85%", sub: "G7 Weighted Avg", desc: "Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems." },
+                ticker2: { label: "Healthcare Inflation", val: "3.8%", sub: "Global Services CPI", desc: "Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains." },
+                ticker3: { label: "MedTech Index (XLV)", val: "$142.5 (XLV)", sub: "Sector Benchmark", desc: "Reflects healthcare sector equity valuations and broader investment appetite." },
+                ticker4: { label: "Imaging Demand Backlog", val: "4.2M", sub: "Est. Global Pending Scans", desc: "Highlights worldwide clinical backlog volume, underscoring the need for automated triage." },
+                ticker5: { label: "Cloud Inference Index", val: "-8.5%", sub: "Compute Cost YoY", desc: "Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins." },
                 clearances: [18, 24, 29, 35, 40, 48],
                 vcFunding: [210, 280, 250, 310, 390, 420],
                 modalities: [35, 28, 20, 12, 5],
                 totalClearances: "142"
             },
-            northAmerica: {
-                clearances: [8, 11, 14, 17, 20, 24],
-                vcFunding: [110, 140, 130, 160, 200, 210],
-                modalities: [38, 26, 18, 12, 6],
-                totalClearances: "68"
-            },
             europe: {
+                ticker1: { label: "UK Base Rate", val: "4.50%", sub: "Bank of England (Live)", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
+                ticker2: { label: "Healthcare Inflation", val: "3.2%", sub: "UK YoY Services CPI", desc: "Measures operational costs in UK/EU healthcare systems." },
+                ticker3: { label: "MedTech VC Funding", val: "£520M", sub: "+8% Q2 Capital Inflow", desc: "Venture capital deployed into European medical technology startups." },
+                ticker4: { label: "NHS Imaging Backlog", val: "612K", sub: "Patients Awaiting Scans", desc: "Highlights outstanding scan volumes across UK NHS trusts." },
+                ticker5: { label: "Cloud Inference Index", val: "-8.5%", sub: "Compute Cost YoY", desc: "Tracks cloud hosting costs for regional deployment." },
                 clearances: [5, 7, 8, 10, 11, 14],
                 vcFunding: [60, 80, 70, 85, 110, 120],
                 modalities: [32, 30, 22, 11, 5],
                 totalClearances: "43"
             },
+            northAmerica: {
+                ticker1: { label: "US Fed Funds Rate", val: "4.25%", sub: "Federal Reserve Target", desc: "Determines North American commercial borrowing conditions." },
+                ticker2: { label: "US Healthcare CPI", val: "4.1%", sub: "Medical Care Services Index", desc: "Inflation metric across US private and public hospital systems." },
+                ticker3: { label: "MedTech VC Funding", val: "$1.8B", sub: "+15% Q2 Capital Inflow", desc: "US & Canadian venture capital deal volume in digital health." },
+                ticker4: { label: "US Scan Wait Times", val: "18.2 Days", sub: "Avg Elective Imaging Delay", desc: "Average delay across major US hospital networks." },
+                ticker5: { label: "Cloud Inference Index", val: "-9.1%", sub: "Compute Cost YoY", desc: "Hyperscaler compute costs across US cloud zones." },
+                clearances: [8, 11, 14, 17, 20, 24],
+                vcFunding: [110, 140, 130, 160, 200, 210],
+                modalities: [38, 26, 18, 12, 6],
+                totalClearances: "68"
+            },
             asia: {
+                ticker1: { label: "Regional Policy Rate", val: "2.10%", sub: "APAC Weighted Avg", desc: "Baseline borrowing costs across key East Asian markets." },
+                ticker2: { label: "Healthcare Inflation", val: "2.9%", sub: "APAC Services CPI", desc: "Measures medical operational costs in the APAC region." },
+                ticker3: { label: "MedTech VC Funding", val: "$620M", sub: "+10% Q2 Inflow", desc: "Venture investment in China, Japan, and Asia-Pacific startups." },
+                ticker4: { label: "Regional Backlog", val: "1.1M", sub: "Est. Diagnostic Delays", desc: "Estimated waiting lists across Tier-1/2 regional hospitals." },
+                ticker5: { label: "Cloud Inference Index", val: "-7.8%", sub: "Compute Cost YoY", desc: "Cloud processing unit costs in regional server hubs." },
                 clearances: [3, 4, 5, 6, 7, 8],
                 vcFunding: [30, 45, 35, 45, 55, 65],
                 modalities: [30, 25, 25, 15, 5],
                 totalClearances: "21"
             },
             middleEast: {
+                ticker1: { label: "Interbank Benchmark", val: "4.75%", sub: "GCC Average", desc: "Cost of borrowing across GCC financial markets." },
+                ticker2: { label: "Healthcare Inflation", val: "3.5%", sub: "Regional CPI", desc: "Operational cost trends in private healthcare." },
+                ticker3: { label: "MedTech VC Funding", val: "$180M", sub: "+18% Q2 Inflow", desc: "Capital flow into Middle Eastern digital health initiatives." },
+                ticker4: { label: "Diagnostic Volume", val: "120K", sub: "Monthly High-Tech Scans", desc: "Monthly imaging volume in major regional hubs." },
+                ticker5: { label: "Cloud Inference Index", val: "-8.0%", sub: "Compute Cost YoY", desc: "Regional cloud processing and data residency overheads." },
                 clearances: [1, 1, 1, 1, 1, 1],
                 vcFunding: [7, 10, 10, 12, 15, 15],
                 modalities: [40, 20, 20, 10, 10],
                 totalClearances: "6"
             },
             southAmerica: {
+                ticker1: { label: "Central Bank Avg", val: "9.50%", sub: "LATAM Benchmark", desc: "Average interest rates affecting LATAM hospital CapEx." },
+                ticker2: { label: "Healthcare Inflation", val: "6.2%", sub: "LATAM Medical CPI", desc: "High local inflation driving need for operational efficiency." },
+                ticker3: { label: "MedTech VC Funding", val: "$95M", sub: "+5% Q2 Inflow", desc: "Venture capital investment across Latin American health tech." },
+                ticker4: { label: "Public Wait List", val: "310K", sub: "Awaiting Diagnostic Scans", desc: "Outstanding imaging requirements in public systems." },
+                ticker5: { label: "Cloud Inference Index", val: "-6.5%", sub: "Compute Cost YoY", desc: "Cloud compute cost dynamics in LATAM server locations." },
                 clearances: [1, 1, 1, 1, 1, 1],
                 vcFunding: [3, 5, 5, 8, 10, 10],
                 modalities: [35, 25, 25, 10, 5],
@@ -328,7 +413,22 @@
             }
         };
 
-        // Line Chart: Approvals vs VC Funding
+        // Live Client-Side API Fetch
+        async function fetchLiveUKRate() {
+            try {
+                const response = await fetch('https://www.bankofengland.co.uk/boeapis/rates/data');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        regionData.europe.ticker1.val = `${parseFloat(data[0].value).toFixed(2)}%`;
+                    }
+                }
+            } catch (err) {
+                console.log("Client-side rate fetch failed, using fallback.");
+            }
+        }
+
+        // Line Chart
         const ctxApprovals = document.getElementById('approvalsChart').getContext('2d');
         const approvalsChart = new Chart(ctxApprovals, {
             type: 'line',
@@ -374,7 +474,7 @@
             }
         });
 
-        // Doughnut Chart: Modality Distribution
+        // Doughnut Chart
         const ctxModality = document.getElementById('modalityChart').getContext('2d');
         const modalityChart = new Chart(ctxModality, {
             type: 'doughnut',
@@ -391,21 +491,58 @@
             }
         });
 
-        // Dropdown Event Listener to update charts and metric card dynamically
-        document.getElementById('regionSelect').addEventListener('change', (e) => {
-            const selectedRegion = regionData[e.target.value];
+        function updateView(regionKey) {
+            const selectedRegion = regionData[regionKey] || regionData.global;
 
-            // Update Approvals vs VC Funding Chart
+            document.getElementById('ticker1-label').innerText = selectedRegion.ticker1.label;
+            document.getElementById('ticker1-val').innerText = selectedRegion.ticker1.val;
+            document.getElementById('ticker1-sub').innerText = selectedRegion.ticker1.sub;
+            document.getElementById('ticker1-desc').innerText = selectedRegion.ticker1.desc;
+
+            document.getElementById('ticker2-label').innerText = selectedRegion.ticker2.label;
+            document.getElementById('ticker2-val').innerText = selectedRegion.ticker2.val;
+            document.getElementById('ticker2-sub').innerText = selectedRegion.ticker2.sub;
+            document.getElementById('ticker2-desc').innerText = selectedRegion.ticker2.desc;
+
+            document.getElementById('ticker3-label').innerText = selectedRegion.ticker3.label;
+            document.getElementById('ticker3-val').innerText = selectedRegion.ticker3.val;
+            document.getElementById('ticker3-sub').innerText = selectedRegion.ticker3.sub;
+            document.getElementById('ticker3-desc').innerText = selectedRegion.ticker3.desc;
+
+            document.getElementById('ticker4-label').innerText = selectedRegion.ticker4.label;
+            document.getElementById('ticker4-val').innerText = selectedRegion.ticker4.val;
+            document.getElementById('ticker4-sub').innerText = selectedRegion.ticker4.sub;
+            document.getElementById('ticker4-desc').innerText = selectedRegion.ticker4.desc;
+
+            document.getElementById('ticker5-label').innerText = selectedRegion.ticker5.label;
+            document.getElementById('ticker5-val').innerText = selectedRegion.ticker5.val;
+            document.getElementById('ticker5-sub').innerText = selectedRegion.ticker5.sub;
+            document.getElementById('ticker5-desc').innerText = selectedRegion.ticker5.desc;
+
             approvalsChart.data.datasets[0].data = selectedRegion.clearances;
             approvalsChart.data.datasets[1].data = selectedRegion.vcFunding;
             approvalsChart.update();
 
-            // Update Modality Chart
             modalityChart.data.datasets[0].data = selectedRegion.modalities;
             modalityChart.update();
 
-            // Update FDA / CE Clearances Metric Card
             document.getElementById('clearances-metric').innerText = selectedRegion.totalClearances;
+        }
+
+        document.getElementById('regionSelect').addEventListener('change', (e) => {
+            const region = e.target.value;
+            const url = new URL(window.location);
+            url.searchParams.set('region', region);
+            window.history.pushState({}, '', url);
+            updateView(region);
+        });
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await fetchLiveUKRate();
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialRegion = urlParams.get('region') || 'global';
+            document.getElementById('regionSelect').value = initialRegion;
+            updateView(initialRegion);
         });
     </script>
 </body>

@@ -2,7 +2,7 @@ name: Weekly Dashboard Update
 
 on:
   schedule:
-    # Runs every Monday at 06:17 UTC (~7:17 AM BST)
+    # Runs daily at 06:17 UTC
     - cron: '17 6 * * *'
   workflow_dispatch:
 
