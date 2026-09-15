@@ -81,7 +81,6 @@
         .badge-positive { background-color: #c6f6d5; color: #22543d; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
         .outlook-summary { font-size: 0.95rem; line-height: 1.5; color: #2d3748; margin-bottom: 15px; }
         
-        /* Updated Grid Layout for 4 Drivers and 4 Headwinds */
         .outlook-factors-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -323,17 +322,20 @@
             </p>
         </div>
 
-        <!-- Text Unit: Key Driver Breakdown -->
+        <!-- Dynamic Regional Operational Highlights -->
         <div class="card col-6">
-            <h2>Market Drivers & Sector Metrics</h2>
+            <h2 id="highlights-title">Regional Operational Highlights</h2>
             <div class="news-item">
-                <strong>Demographic Pressure:</strong> Population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes.
+                <strong id="hl1-title">Demographic Demand:</strong> 
+                <span id="hl1-text">Global population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes worldwide.</span>
             </div>
             <div class="news-item">
-                <strong>Reimbursement Updates:</strong> 4 new CPT/NHS billing codes introduced this quarter for automated triage support.
+                <strong id="hl2-title">Procurement Timeline:</strong> 
+                <span id="hl2-text">Average enterprise contract closing cycle is currently 9.4 months across major health networks.</span>
             </div>
             <div class="news-item">
-                <strong>Compute Infrastructure Costs:</strong> GPU hardware expenditure for model training down 8% due to cloud optimisation.
+                <strong id="hl3-title">Compute Overhead:</strong> 
+                <span id="hl3-text">Cloud processing expenditure per 1,000 inference scans has decreased by 8.5% YoY.</span>
             </div>
         </div>
 
@@ -354,7 +356,16 @@
                 clearances: [18, 24, 29, 35, 40, 48],
                 vcFunding: [210, 280, 250, 310, 390, 420],
                 modalities: [35, 28, 20, 12, 5],
-                totalClearances: "142"
+                totalClearances: "142",
+                highlights: {
+                    title: "Global Operational Highlights",
+                    hl1Title: "Demographic Demand:",
+                    hl1Text: "Global population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes worldwide.",
+                    hl2Title: "Procurement Timeline:",
+                    hl2Text: "Average enterprise contract closing cycle is currently 9.4 months across major health networks.",
+                    hl3Title: "Compute Overhead:",
+                    hl3Text: "Cloud processing expenditure per 1,000 inference scans has decreased by 8.5% YoY."
+                }
             },
             europe: {
                 ticker1: { label: "UK Base Rate", val: "4.50%", sub: "Bank of England (Live)", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
@@ -365,7 +376,16 @@
                 clearances: [5, 7, 8, 10, 11, 14],
                 vcFunding: [60, 80, 70, 85, 110, 120],
                 modalities: [32, 30, 22, 11, 5],
-                totalClearances: "43"
+                totalClearances: "43",
+                highlights: {
+                    title: "European Operational Highlights",
+                    hl1Title: "NHS Tariff Expansion:",
+                    hl1Text: "MedTech Funding Mandate supporting accelerated adoption for AI stroke and lung screening triage.",
+                    hl2Title: "CE Mark Transition:",
+                    hl2Text: "MDR compliance delays continue to push average European software-as-a-medical-device clearance to 14 months.",
+                    hl3Title: "Workforce Strain:",
+                    hl3Text: "Royal College of Radiologists reports a 29% consultant shortage, driving automated reporting demand."
+                }
             },
             northAmerica: {
                 ticker1: { label: "US Fed Funds Rate", val: "4.25%", sub: "Federal Reserve Target", desc: "Determines North American commercial borrowing conditions." },
@@ -376,7 +396,16 @@
                 clearances: [8, 11, 14, 17, 20, 24],
                 vcFunding: [110, 140, 130, 160, 200, 210],
                 modalities: [38, 26, 18, 12, 6],
-                totalClearances: "68"
+                totalClearances: "68",
+                highlights: {
+                    title: "North American Operational Highlights",
+                    hl1Title: "CPT Coding Growth:",
+                    hl1Text: "Category I CPT reimbursement codes now active for quantitative CT and MRI CADe algorithms.",
+                    hl2Title: "PACS Integration:",
+                    hl2Text: "Over 70% of US radiology groups now access AI tools through unified PACS marketplace hubs.",
+                    hl3Title: "FDA Predicate Rules:",
+                    hl3Text: "Updated PCCP guidelines allowing faster post-market algorithm updates without new 510(k) filings."
+                }
             },
             asia: {
                 ticker1: { label: "Regional Policy Rate", val: "2.10%", sub: "APAC Weighted Avg", desc: "Baseline borrowing costs across key East Asian markets." },
@@ -387,7 +416,16 @@
                 clearances: [3, 4, 5, 6, 7, 8],
                 vcFunding: [30, 45, 35, 45, 55, 65],
                 modalities: [30, 25, 25, 15, 5],
-                totalClearances: "21"
+                totalClearances: "21",
+                highlights: {
+                    title: "Asia-Pacific Operational Highlights",
+                    hl1Title: "Tier-2 Hospital Adoption:",
+                    hl1Text: "Rapid deployment of screening AI in regional hospitals compensating for specialist centralization.",
+                    hl2Title: "Local Regulation:",
+                    hl2Text: "NMPA (China) and PMDA (Japan) accelerating fast-track approvals for domestic oncology AI models.",
+                    hl3Title: "Cloud On-Premise Shift:",
+                    hl3Text: "Strict local data residency laws favoring hybrid on-premise edge appliance deployments."
+                }
             },
             middleEast: {
                 ticker1: { label: "Interbank Benchmark", val: "4.75%", sub: "GCC Average", desc: "Cost of borrowing across GCC financial markets." },
@@ -398,7 +436,16 @@
                 clearances: [1, 1, 1, 1, 1, 1],
                 vcFunding: [7, 10, 10, 12, 15, 15],
                 modalities: [40, 20, 20, 10, 10],
-                totalClearances: "6"
+                totalClearances: "6",
+                highlights: {
+                    title: "Middle East Operational Highlights",
+                    hl1Title: "State Infrastructure Spending:",
+                    hl1Text: "GCC national health transformation funds driving centralized AI deployment in mega-hospitals.",
+                    hl2Title: "Vendor Expansion:",
+                    hl2Text: "Major US/EU AI developers establishing regional data centers to satisfy local privacy mandates.",
+                    hl3Title: "Screening Campaigns:",
+                    hl3Text: "Government-backed mobile mammography and chest CT screening drives heavily utilizing AI triage."
+                }
             },
             southAmerica: {
                 ticker1: { label: "Central Bank Avg", val: "9.50%", sub: "LATAM Benchmark", desc: "Average interest rates affecting LATAM hospital CapEx." },
@@ -409,7 +456,16 @@
                 clearances: [1, 1, 1, 1, 1, 1],
                 vcFunding: [3, 5, 5, 8, 10, 10],
                 modalities: [35, 25, 25, 10, 5],
-                totalClearances: "4"
+                totalClearances: "4",
+                highlights: {
+                    title: "South America Operational Highlights",
+                    hl1Title: "Private Sector Focus:",
+                    hl1Text: "Adoption concentrated in tier-1 private healthcare networks due to public CapEx constraints.",
+                    hl2Title: "ANVISA Clearances:",
+                    hl2Text: "Brazilian regulatory agency harmonizing SAMD pathways to accelerate international software entry.",
+                    hl3Title: "Teleradiology Demand:",
+                    hl3Text: "High reliance on AI triage tools within remote teleradiology networks spanning rural regions."
+                }
             }
         };
 
@@ -527,6 +583,17 @@
             modalityChart.update();
 
             document.getElementById('clearances-metric').innerText = selectedRegion.totalClearances;
+
+            // Update Dynamic Regional Operational Highlights
+            if (selectedRegion.highlights) {
+                document.getElementById('highlights-title').innerText = selectedRegion.highlights.title;
+                document.getElementById('hl1-title').innerText = selectedRegion.highlights.hl1Title;
+                document.getElementById('hl1-text').innerText = selectedRegion.highlights.hl1Text;
+                document.getElementById('hl2-title').innerText = selectedRegion.highlights.hl2Title;
+                document.getElementById('hl2-text').innerText = selectedRegion.highlights.hl2Text;
+                document.getElementById('hl3-title').innerText = selectedRegion.highlights.hl3Title;
+                document.getElementById('hl3-text').innerText = selectedRegion.highlights.hl3Text;
+            }
         }
 
         document.getElementById('regionSelect').addEventListener('change', (e) => {
