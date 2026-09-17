@@ -125,10 +125,17 @@
             color: #4a5568;
             line-height: 1.35;
         }
+
+        /* News Container Scroll & Overflow Fix */
+        #news-feed-container {
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
         
         .news-item { margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #edf2f7; }
         .news-item:last-child { border-bottom: none; margin-bottom: 0; }
-        .news-title { font-weight: 600; text-decoration: none; color: #2b6cb0; }
+        .news-title { font-weight: 600; text-decoration: none; color: #2b6cb0; display: block; word-break: break-word; }
         .news-title:hover { text-decoration: underline; }
         .news-meta { font-size: 0.8rem; color: #718096; margin-top: 4px; }
         .news-tag { display: inline-block; background: #edf2f7; color: #4a5568; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-right: 5px; font-weight: 600; }
@@ -275,10 +282,10 @@
 
         <!-- Key Sector Metrics -->
         <div class="card col-3">
-            <div class="metric-label">FDA / CE Clearances (YTD)</div>
+            <div class="metric-label">FDA Clearances (LLZ Category)</div>
             <div class="metric" id="clearances-metric">142</div>
-            <div class="metric-sub">+18% vs Previous Year</div>
-            <p class="metric-desc">Tracks regulatory market approvals (openFDA live data), signalling algorithm maturation speed.</p>
+            <div class="metric-sub">Radiology Image Processing</div>
+            <p class="metric-desc">Tracks FDA 510(k) clearances under product code LLZ via openFDA live API.</p>
         </div>
         <div class="card col-3">
             <div class="metric-label">Radiologist Vacancy Rate</div>
@@ -313,7 +320,7 @@
             </div>
         </div>
 
-		<!-- Graph Unit 2: Modality Breakdown -->
+        <!-- Graph Unit 2: Modality Breakdown -->
         <div class="card col-6">
             <h2>AI Clearances by Imaging Modality</h2>
             <canvas id="modalityChart"></canvas>
@@ -321,9 +328,6 @@
                 CT and MRI account for over 60% of overall regulatory clearances due to high scan complexity, heavy clinical workloads, and strong reimbursement coverage. Emerging modalities like Digital Pathology and Point-of-Care Ultrasound show accelerated relative growth as algorithms move beyond traditional cross-sectional imaging.
             </p>
         </div>
-
-        <!-- Dynamic Regional Operational Highlights -->
-        <div class="card col-6">
 
         <!-- Dynamic Regional Operational Highlights -->
         <div class="card col-6">
@@ -371,7 +375,7 @@
                 }
             },
             europe: {
-                ticker1: { label: "UK Base Rate", val: "4.50%", sub: "Bank of England (Live)", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
+                ticker1: { label: "UK Base Rate", val: "3.75%", sub: "Bank of England Benchmark", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
                 ticker2: { label: "Healthcare Inflation", val: "3.2%", sub: "UK YoY Services CPI", desc: "Measures operational costs in UK/EU healthcare systems." },
                 ticker3: { label: "MedTech VC Funding", val: "£520M", sub: "+8% Q2 Capital Inflow", desc: "Venture capital deployed into European medical technology startups." },
                 ticker4: { label: "NHS Imaging Backlog", val: "612K", sub: "Patients Awaiting Scans", desc: "Highlights outstanding scan volumes across UK NHS trusts." },
@@ -472,22 +476,7 @@
             }
         };
 
-        // Live Client-Side API Fetch
-        async function fetchLiveUKRate() {
-            try {
-                const response = await fetch('https://www.bankofengland.co.uk/boeapis/rates/data');
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.length > 0) {
-                        regionData.europe.ticker1.val = `${parseFloat(data[0].value).toFixed(2)}%`;
-                    }
-                }
-            } catch (err) {
-                console.log("Client-side rate fetch failed, using fallback.");
-            }
-        }
-
-        // Line Chart
+        // Line Chart Initialization
         const ctxApprovals = document.getElementById('approvalsChart').getContext('2d');
         const approvalsChart = new Chart(ctxApprovals, {
             type: 'line',
@@ -533,7 +522,7 @@
             }
         });
 
-        // Doughnut Chart
+        // Doughnut Chart Initialization
         const ctxModality = document.getElementById('modalityChart').getContext('2d');
         const modalityChart = new Chart(ctxModality, {
             type: 'doughnut',
@@ -587,7 +576,6 @@
 
             document.getElementById('clearances-metric').innerText = selectedRegion.totalClearances;
 
-            // Update Dynamic Regional Operational Highlights
             if (selectedRegion.highlights) {
                 document.getElementById('highlights-title').innerText = selectedRegion.highlights.title;
                 document.getElementById('hl1-title').innerText = selectedRegion.highlights.hl1Title;
@@ -607,8 +595,7 @@
             updateView(region);
         });
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            await fetchLiveUKRate();
+        window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const initialRegion = urlParams.get('region') || 'global';
             document.getElementById('regionSelect').value = initialRegion;
