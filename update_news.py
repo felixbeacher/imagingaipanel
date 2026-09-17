@@ -24,7 +24,7 @@ def fetch_live_metrics():
         "uk_rate": "3.75%"
     }
     
-    # 1. Fetch XLV MedTech ETF Price
+    # Fetch XLV MedTech ETF Price
     try:
         xlv = yf.Ticker("XLV")
         xlv_price = xlv.fast_info.get("lastPrice", 140.0)
@@ -61,13 +61,13 @@ def update_dashboard():
     with open("index.html", "r", encoding="utf-8") as f:
         content = f.read()
 
-    # 1. Inject live news feed
+    # 1. Safely inject news HTML strictly inside the news container
     if "<!-- NEWS_ITEMS_PLACEHOLDER -->" in content:
         content = content.replace("<!-- NEWS_ITEMS_PLACEHOLDER -->", news_html)
     else:
         content = re.sub(
-            r'<div id="news-feed-container">.*?</div>',
-            f'<div id="news-feed-container">{news_html}</div>',
+            r'(<div id="news-feed-container">)(.*?)(</div>)',
+            rf'\1\n{news_html}\n\3',
             content,
             flags=re.DOTALL
         )
@@ -96,7 +96,7 @@ def update_dashboard():
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(content)
 
-    print(f"✅ Dashboard updated successfully.")
+    print("✅ Dashboard updated successfully.")
 
 if __name__ == "__main__":
     update_dashboard()
