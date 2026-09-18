@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en-GB">
-	<head>
-		<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<title>Medical Imaging AI & Health Macro Dashboard</title>
-				<!-- Browser Tab Icon (Favicon) -->
-				<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8F%A5%3C/text%3E%3C/svg%3E">
-					<!-- Chart.js CDN -->
-					<script src="https://cdn.jsdelivr.net/npm/chart.js"/>
-					<style>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Imaging AI & Health Macro Dashboard</title>
+    
+	<!-- Browser Tab Icon (Favicon) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8F%A5%3C/text%3E%3C/svg%3E">
+	<!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #f4f6f8; color: #333; padding: 20px; }
         
@@ -164,240 +165,239 @@
             .factor-list { grid-template-columns: 1fr; }
         }
     </style>
-				</head>
-				<body>
-					<header>
-						<div>
-							<h1>Medical Imaging AI & Macroeconomic Dashboard</h1>
-							<p class="header-desc">An executive intelligence dashboard, using AI for real-time monitoring of industry news, regulatory trends, macroeconomic indicators, and adoption in medical imaging AI.</p>
-							<p class="author-bio">Created and managed by Felix Beacher, PhD.</p>
-						</div>
-						<div class="region-filter-container">
-							<label for="regionSelect">Region View:</label>
-							<select id="regionSelect">
-								<option value="global">Global (Whole World)</option>
-								<option value="northAmerica">North America</option>
-								<option value="europe">Europe</option>
-								<option value="asia">Asia</option>
-								<option value="middleEast">Middle East</option>
-								<option value="southAmerica">South America</option>
-							</select>
-						</div>
-						<!-- Cardiology -->
-						<div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-							<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Cardiology ($242M)</h3>
-							<canvas id="cardioVendorChart"/>
-						</div>
-						<!-- Pulmonology -->
-						<div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-							<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Pulmonology ($198M)</h3>
-							<canvas id="pulmoVendorChart"/>
-						</div>
-						<!-- Neurology -->
-						<div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-							<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Neurology ($132M)</h3>
-							<canvas id="neuroVendorChart"/>
-						</div>
-						<!-- Breast -->
-						<div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-							<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Breast ($103M)</h3>
-							<canvas id="breastVendorChart"/>
-						</div>
-						<!-- Oncology -->
-						<div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-							<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Oncology ($81M)</h3>
-							<canvas id="oncologyVendorChart"/>
-						</div>
-					</header>
-					<!-- Top Macro Indicators Ticker (Dynamic) -->
-					<div class="ticker-banner">
-						<div class="ticker-card">
-							<div class="metric-label" id="ticker1-label">Central Bank Policy</div>
-							<div class="metric" id="ticker1-val">3.85%</div>
-							<div class="metric-sub" id="ticker1-sub">G7 Weighted Avg</div>
-							<p class="metric-desc" id="ticker1-desc">Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems.</p>
-						</div>
-						<div class="ticker-card">
-							<div class="metric-label" id="ticker2-label">Healthcare Inflation</div>
-							<div class="metric" id="ticker2-val">3.8%</div>
-							<div class="metric-sub" id="ticker2-sub">Global Services CPI</div>
-							<p class="metric-desc" id="ticker2-desc">Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains.</p>
-						</div>
-						<div class="ticker-card">
-							<div class="metric-label" id="ticker3-label">MedTech Index (XLV)</div>
-							<div class="metric" id="ticker3-val">$142.5 (XLV)</div>
-							<div class="metric-sub" id="ticker3-sub">Sector Benchmark</div>
-							<p class="metric-desc" id="ticker3-desc">Reflects healthcare sector equity valuations and broader investment appetite.</p>
-						</div>
-						<div class="ticker-card">
-							<div class="metric-label" id="ticker4-label">Imaging Demand Backlog</div>
-							<div class="metric" id="ticker4-val">4.2M</div>
-							<div class="metric-sub" id="ticker4-sub">Est. Global Pending Scans</div>
-							<p class="metric-desc" id="ticker4-desc">Highlights worldwide clinical backlog volume, underscoring the need for automated triage.</p>
-						</div>
-						<div class="ticker-card">
-							<div class="metric-label" id="ticker5-label">Cloud Inference Index</div>
-							<div class="metric" id="ticker5-val">-8.5%</div>
-							<div class="metric-sub" id="ticker5-sub">Compute Cost YoY</div>
-							<p class="metric-desc" id="ticker5-desc">Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins.</p>
-						</div>
-					</div>
-					<div class="dashboard-grid">
-						<!-- Sector Outlook Summary Unit -->
-						<div class="card col-12 outlook-box">
-							<div class="outlook-header">
-								<h2>Sector Outlook Summary (12-18 Month View)</h2>
-								<span class="badge-positive">Moderately Bullish</span>
-							</div>
-							<p class="outlook-summary">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>Medical Imaging AI & Macroeconomic Dashboard</h1>
+            <p class="header-desc">An executive intelligence dashboard, using AI for real-time monitoring of industry news, regulatory trends, macroeconomic indicators, and adoption in medical imaging AI.</p>
+            <p class="author-bio">Created and managed by Felix Beacher, PhD.</p>
+        </div>
+        <div class="region-filter-container">
+            <label for="regionSelect">Region View:</label>
+            <select id="regionSelect">
+                <option value="global">Global (Whole World)</option>
+                <option value="northAmerica">North America</option>
+                <option value="europe">Europe</option>
+                <option value="asia">Asia</option>
+                <option value="middleEast">Middle East</option>
+                <option value="southAmerica">South America</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- Top Macro Indicators Ticker (Dynamic) -->
+    <div class="ticker-banner">
+        <div class="ticker-card">
+            <div class="metric-label" id="ticker1-label">Central Bank Policy</div>
+            <div class="metric" id="ticker1-val">3.85%</div>
+            <div class="metric-sub" id="ticker1-sub">G7 Weighted Avg</div>
+            <p class="metric-desc" id="ticker1-desc">Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems.</p>
+        </div>
+        <div class="ticker-card">
+            <div class="metric-label" id="ticker2-label">Healthcare Inflation</div>
+            <div class="metric" id="ticker2-val">3.8%</div>
+            <div class="metric-sub" id="ticker2-sub">Global Services CPI</div>
+            <p class="metric-desc" id="ticker2-desc">Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains.</p>
+        </div>
+        <div class="ticker-card">
+            <div class="metric-label" id="ticker3-label">MedTech Index (XLV)</div>
+            <div class="metric" id="ticker3-val">$142.5 (XLV)</div>
+            <div class="metric-sub" id="ticker3-sub">Sector Benchmark</div>
+            <p class="metric-desc" id="ticker3-desc">Reflects healthcare sector equity valuations and broader investment appetite.</p>
+        </div>
+        <div class="ticker-card">
+            <div class="metric-label" id="ticker4-label">Imaging Demand Backlog</div>
+            <div class="metric" id="ticker4-val">4.2M</div>
+            <div class="metric-sub" id="ticker4-sub">Est. Global Pending Scans</div>
+            <p class="metric-desc" id="ticker4-desc">Highlights worldwide clinical backlog volume, underscoring the need for automated triage.</p>
+        </div>
+        <div class="ticker-card">
+            <div class="metric-label" id="ticker5-label">Cloud Inference Index</div>
+            <div class="metric" id="ticker5-val">-8.5%</div>
+            <div class="metric-sub" id="ticker5-sub">Compute Cost YoY</div>
+            <p class="metric-desc" id="ticker5-desc">Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        
+        <!-- Sector Outlook Summary Unit -->
+        <div class="card col-12 outlook-box">
+            <div class="outlook-header">
+                <h2>Sector Outlook Summary (12-18 Month View)</h2>
+                <span class="badge-positive">Moderately Bullish</span>
+            </div>
+            <p class="outlook-summary">
                 The medical imaging AI sector is transitioning from algorithm validation to large-scale clinical integration. Structural workforce shortages in radiology and growing scan backlogs provide strong demand resilience against wider macroeconomic headwinds. High central bank interest rates continue to extend capital purchasing cycles, but adoption is sustained by clear reimbursement pathway expansions and integrated platform partnerships with major OEMs.
             </p>
-							<div class="outlook-factors-grid">
-								<!-- 4 Key Growth Drivers -->
-								<div class="factor-column drivers-column">
-									<h3>Primary Growth Drivers</h3>
-									<div class="factor-list">
-										<div class="factor-card">
-											<div class="factor-card-title">Workforce Shortages</div>
-											<div class="factor-card-text">Severe radiologist deficits forcing trusts to deploy automated triage and assistance tools.</div>
-										</div>
-										<div class="factor-card">
-											<div class="factor-card-title">Reimbursement Expansion</div>
-											<div class="factor-card-text">New dedicated CPT and national health service billing codes unlocking direct provider revenue.</div>
-										</div>
-										<div class="factor-card">
-											<div class="factor-card-title">OEM Platform Integration</div>
-											<div class="factor-card-text">Major PACS and imaging vendors bundling AI directly into hardware software stacks.</div>
-										</div>
-										<div class="factor-card">
-											<div class="factor-card-title">Clinical Evidence Growth</div>
-											<div class="factor-card-text">Expanding prospective validation studies demonstrating clear ROI and diagnostic accuracy gains.</div>
-										</div>
-									</div>
-								</div>
-								<!-- 4 Key Headwinds -->
-								<div class="factor-column headwinds-column">
-									<h3>Key Sector Headwinds</h3>
-									<div class="factor-list">
-										<div class="factor-card">
-											<div class="factor-card-title">Elevated Cost of Capital</div>
-											<div class="factor-card-text">High interest rates stretching hospital procurement cycles and dampening venture capital.</div>
-										</div>
-										<div class="factor-card">
-											<div class="factor-card-title">IT Integration Friction</div>
-											<div class="factor-card-text">Complex hospital IT architecture and cybersecurity requirements delaying deployment timelines.</div>
-										</div>
-										<div class="factor-card">
-											<div class="factor-card-title">Regulatory Scrubbing</div>
-											<div class="factor-card-text">Stricter post-market surveillance demands increasing post-clearance compliance overheads.</div>
-										</div>
-										<div class="factor-card">
-											<div class="factor-card-title">Hospital CapEx Pressure</div>
-											<div class="factor-card-text">Tight public and private healthcare budgets forcing tough prioritization against core infrastructure.</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- Key Sector Metrics -->
-						<div class="card col-3">
-							<div class="metric-label">FDA Clearances (LLZ Category)</div>
-							<div class="metric" id="clearances-metric">142</div>
-							<div class="metric-sub">Radiology Image Processing</div>
-							<p class="metric-desc">Tracks FDA 510(k) clearances under product code LLZ via openFDA live API.</p>
-						</div>
-						<div class="card col-3">
-							<div class="metric-label">Radiologist Vacancy Rate</div>
-							<div class="metric">12.4%</div>
-							<div class="metric-sub">High Workforce Deficit</div>
-							<p class="metric-desc">Measures unfilled clinical posts, underscoring the structural need for automated productivity solutions.</p>
-						</div>
-						<div class="card col-3">
-							<div class="metric-label">Reimbursement Adoption</div>
-							<div class="metric">34.2%</div>
-							<div class="metric-sub">Hospitals with Active Billing</div>
-							<p class="metric-desc">Calculated via public online API registers and CMS datasets.</p>
-						</div>
-						<div class="card col-3">
-							<div class="metric-label">Prospective Clinical Validation</div>
-							<div class="metric">86</div>
-							<div class="metric-sub">Peer-Reviewed Papers YTD</div>
-							<p class="metric-desc">Quantifies real-world clinical evidence publications needed to convince hospital procurement committees.</p>
-						</div>
-						<!-- Graph Unit 1: Approvals vs VC Funding -->
-						<div class="card col-8">
-							<h2>AI Approvals vs. MedTech Venture Capital Investment</h2>
-							<canvas id="approvalsChart"/>
-						</div>
-						<!-- Text Unit: Targeted News Feed -->
-						<div class="card col-4">
-							<h2>Latest Industry Headlines</h2>
-							<div id="news-feed-container">
-								<!-- NEWS_ITEMS_PLACEHOLDER -->
-							</div>
-						</div>
-						<!-- Graph Unit 2: Modality Breakdown -->
-						<div class="card col-6">
-							<h2>AI Clearances by Imaging Modality</h2>
-							<canvas id="modalityChart"/>
-							<p class="metric-desc" style="margin-top: 15px;">
+            
+            <div class="outlook-factors-grid">
+                <!-- 4 Key Growth Drivers -->
+                <div class="factor-column drivers-column">
+                    <h3>Primary Growth Drivers</h3>
+                    <div class="factor-list">
+                        <div class="factor-card">
+                            <div class="factor-card-title">Workforce Shortages</div>
+                            <div class="factor-card-text">Severe radiologist deficits forcing trusts to deploy automated triage and assistance tools.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Reimbursement Expansion</div>
+                            <div class="factor-card-text">New dedicated CPT and national health service billing codes unlocking direct provider revenue.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">OEM Platform Integration</div>
+                            <div class="factor-card-text">Major PACS and imaging vendors bundling AI directly into hardware software stacks.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Clinical Evidence Growth</div>
+                            <div class="factor-card-text">Expanding prospective validation studies demonstrating clear ROI and diagnostic accuracy gains.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Key Headwinds -->
+                <div class="factor-column headwinds-column">
+                    <h3>Key Sector Headwinds</h3>
+                    <div class="factor-list">
+                        <div class="factor-card">
+                            <div class="factor-card-title">Elevated Cost of Capital</div>
+                            <div class="factor-card-text">High interest rates stretching hospital procurement cycles and dampening venture capital.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">IT Integration Friction</div>
+                            <div class="factor-card-text">Complex hospital IT architecture and cybersecurity requirements delaying deployment timelines.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Regulatory Scrubbing</div>
+                            <div class="factor-card-text">Stricter post-market surveillance demands increasing post-clearance compliance overheads.</div>
+                        </div>
+                        <div class="factor-card">
+                            <div class="factor-card-title">Hospital CapEx Pressure</div>
+                            <div class="factor-card-text">Tight public and private healthcare budgets forcing tough prioritisation against core infrastructure.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Sector Metrics -->
+        <div class="card col-3">
+            <div class="metric-label">FDA Clearances (LLZ Category)</div>
+            <div class="metric" id="clearances-metric">142</div>
+            <div class="metric-sub">Radiology Image Processing</div>
+            <p class="metric-desc">Tracks FDA 510(k) clearances under product code LLZ via openFDA live API.</p>
+        </div>
+        <div class="card col-3">
+            <div class="metric-label">Radiologist Vacancy Rate</div>
+            <div class="metric">12.4%</div>
+            <div class="metric-sub">High Workforce Deficit</div>
+            <p class="metric-desc">Measures unfilled clinical posts, underscoring the structural need for automated productivity solutions.</p>
+        </div>
+        <div class="card col-3">
+            <div class="metric-label">Reimbursement Adoption</div>
+            <div class="metric">34.2%</div>
+            <div class="metric-sub">Hospitals with Active Billing</div>
+            <p class="metric-desc">Calculated via online public tariff registers and CMS claims datasets.</p>
+        </div>
+        <div class="card col-3">
+            <div class="metric-label">Prospective Clinical Validation</div>
+            <div class="metric">86</div>
+            <div class="metric-sub">Peer-Reviewed Papers YTD</div>
+            <p class="metric-desc">Quantifies real-world clinical evidence publications needed to convince hospital procurement committees.</p>
+        </div>
+
+        <!-- Graph Unit 1: Approvals vs VC Funding -->
+        <div class="card col-8">
+            <h2>AI Approvals vs. MedTech Venture Capital Investment</h2>
+            <canvas id="approvalsChart"></canvas>
+        </div>
+
+        <!-- Text Unit: Targeted News Feed -->
+        <div class="card col-4">
+            <h2>Latest Industry Headlines</h2>
+            <div id="news-feed-container">
+                <!-- NEWS_ITEMS_PLACEHOLDER -->
+            </div>
+        </div>
+
+        <!-- Graph Unit 2: Modality Breakdown -->
+        <div class="card col-6">
+            <h2>AI Clearances by Imaging Modality</h2>
+            <canvas id="modalityChart"></canvas>
+            <p class="metric-desc" style="margin-top: 15px;">
                 CT and MRI account for over 60% of overall regulatory clearances due to high scan complexity, heavy clinical workloads, and strong reimbursement coverage. Emerging modalities like Digital Pathology and Point-of-Care Ultrasound show accelerated relative growth as algorithms move beyond traditional cross-sectional imaging.
             </p>
-						</div>
-						<!-- Graph Unit 3: Stock Index vs Interest Rate Graph (6-Month View) -->
-						<div class="card col-6">
-							<h2 id="macroChartTitle">Stock Market Index & Interest Rates (6-Month View)</h2>
-							<canvas id="macroChart"/>
-							<p class="metric-desc" style="margin-top: 15px;">
+        </div>
+
+        <!-- Graph Unit 3: Stock Index vs Interest Rate Graph (6-Month View) -->
+        <div class="card col-6">
+            <h2 id="macroChartTitle">Stock Market Index & Interest Rates (6-Month View)</h2>
+            <canvas id="macroChart"></canvas>
+            <p class="metric-desc" style="margin-top: 15px;">
                 Illustrates the 6-month trailing correlation between broad market equity valuations and regional central bank interest rates shaping enterprise health spending.
             </p>
-						</div>
-						<!-- Graph Unit 4: Vendor Revenue Breakdown (Pie Charts) -->
-						<div class="card col-12">
-							<h2>Top 5 Vendor AI Revenue Breakdown (Public Online Estimates)</h2>
-							<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-around; margin-top: 15px;">
-								<div style="flex: 1; min-width: 260px; max-width: 320px; text-align: center;">
-									<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Total Overall Revenue</h3>
-									<canvas id="totalVendorChart"/>
-								</div>
-								<div style="flex: 1; min-width: 260px; max-width: 320px; text-align: center;">
-									<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Cardiology AI Revenue</h3>
-									<canvas id="cardioVendorChart"/>
-								</div>
-								<div style="flex: 1; min-width: 260px; max-width: 320px; text-align: center;">
-									<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Pulmonology AI Revenue</h3>
-									<canvas id="pulmoVendorChart"/>
-								</div>
-								<div style="flex: 1; min-width: 260px; max-width: 320px; text-align: center;">
-									<h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Neurology & Oncology AI</h3>
-									<canvas id="neuroVendorChart"/>
-								</div>
-							</div>
-							<p class="metric-desc" style="margin-top: 15px;">
+        </div>
+
+        <!-- Graph Unit 4: Vendor Revenue Breakdown (Pie Charts) -->
+        <div class="card col-12">
+            <h2>Top 5 Vendor AI Revenue Breakdown (Public Online Estimates)</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-around; margin-top: 15px;">
+                <div style="flex: 1; min-width: 260px; max-width: 320px; text-align: center;">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Total Overall Revenue</h3>
+                    <canvas id="totalVendorChart"></canvas>
+                </div>
+                <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Cardiology ($242M)</h3>
+                    <canvas id="cardioVendorChart"></canvas>
+                </div>
+                <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Pulmonology ($198M)</h3>
+                    <canvas id="pulmoVendorChart"></canvas>
+                </div>
+                <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Neurology ($132M)</h3>
+                    <canvas id="neuroVendorChart"></canvas>
+                </div>
+                <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Breast ($103M)</h3>
+                    <canvas id="breastVendorChart"></canvas>
+                </div>
+                <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: #2d3748;">Oncology ($81M)</h3>
+                    <canvas id="oncologyVendorChart"></canvas>
+                </div>
+            </div>
+            <p class="metric-desc" style="margin-top: 15px;">
                 Calculated via public financial filings, openFDA device clearance shares, and CMS Medicare reimbursement volume proxies across top vendors (Siemens Healthineers, GE HealthCare, Philips, Aidoc, and Fujifilm).
             </p>
-						</div>
-						<!-- Dynamic Regional Operational Highlights -->
-						<div class="card col-12">
-							<h2 id="highlights-title">Regional Operational Highlights</h2>
-							<div class="news-item">
-								<strong id="hl1-title">Demographic Demand:</strong>
-								<span id="hl1-text">Global population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes worldwide.</span>
-							</div>
-							<div class="news-item">
-								<strong id="hl2-title">Procurement Timeline:</strong>
-								<span id="hl2-text">Average enterprise contract closing cycle is currently 9.4 months across major health networks.</span>
-							</div>
-							<div class="news-item">
-								<strong id="hl3-title">Compute Overhead:</strong>
-								<span id="hl3-text">Cloud processing expenditure per 1,000 inference scans has decreased by 8.5% YoY.</span>
-							</div>
-						</div>
-					</div>
-					<footer>
+        </div>
+
+        <!-- Dynamic Regional Operational Highlights -->
+        <div class="card col-12">
+            <h2 id="highlights-title">Regional Operational Highlights</h2>
+            <div class="news-item">
+                <strong id="hl1-title">Demographic Demand:</strong> 
+                <span id="hl1-text">Global population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes worldwide.</span>
+            </div>
+            <div class="news-item">
+                <strong id="hl2-title">Procurement Timeline:</strong> 
+                <span id="hl2-text">Average enterprise contract closing cycle is currently 9.4 months across major health networks.</span>
+            </div>
+            <div class="news-item">
+                <strong id="hl3-title">Compute Overhead:</strong> 
+                <span id="hl3-text">Cloud processing expenditure per 1,000 inference scans has decreased by 8.5% YoY.</span>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
         &copy; 2026 Felix Beacher. All rights reserved.
     </footer>
-					<script>
+
+    <script>
         const monthLabels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
 
         const regionData = {
@@ -486,11 +486,11 @@
                 highlights: {
                     title: "Asia-Pacific Operational Highlights",
                     hl1Title: "Tier-2 Hospital Adoption:",
-                    hl1Text: "Rapid deployment of screening AI in regional hospitals compensating for specialist centralization.",
+                    hl1Text: "Rapid deployment of screening AI in regional hospitals compensating for specialist centralisation.",
                     hl2Title: "Local Regulation:",
                     hl2Text: "NMPA (China) and PMDA (Japan) accelerating fast-track approvals for domestic oncology AI models.",
                     hl3Title: "Cloud On-Premise Shift:",
-                    hl3Text: "Strict local data residency laws favoring hybrid on-premise edge appliance deployments."
+                    hl3Text: "Strict local data residency laws favouring hybrid on-premise edge appliance deployments."
                 }
             },
             middleEast: {
@@ -509,11 +509,11 @@
                 highlights: {
                     title: "Middle East Operational Highlights",
                     hl1Title: "State Infrastructure Spending:",
-                    hl1Text: "GCC national health transformation funds driving centralized AI deployment in mega-hospitals.",
+                    hl1Text: "GCC national health transformation funds driving centralised AI deployment in mega-hospitals.",
                     hl2Title: "Vendor Expansion:",
-                    hl2Text: "Major US/EU AI developers establishing regional data centers to satisfy local privacy mandates.",
+                    hl2Text: "Major US/EU AI developers establishing regional data centres to satisfy local privacy mandates.",
                     hl3Title: "Screening Campaigns:",
-                    hl3Text: "Government-backed mobile mammography and chest CT screening drives heavily utilizing AI triage."
+                    hl3Text: "Government-backed mobile mammography and chest CT screening drives heavily utilising AI triage."
                 }
             },
             southAmerica: {
@@ -534,7 +534,7 @@
                     hl1Title: "Private Sector Focus:",
                     hl1Text: "Adoption concentrated in tier-1 private healthcare networks due to public CapEx constraints.",
                     hl2Title: "ANVISA Clearances:",
-                    hl2Text: "Brazilian regulatory agency harmonizing SAMD pathways to accelerate international software entry.",
+                    hl2Text: "Brazilian regulatory agency harmonising SAMD pathways to accelerate international software entry.",
                     hl3Title: "Teleradiology Demand:",
                     hl3Text: "High reliance on AI triage tools within remote teleradiology networks spanning rural regions."
                 }
@@ -652,62 +652,6 @@
             }
         });
 
-        // Vendor Pie Charts Data (Calculated via Public Online Data / CMS Claims)
-        const vendorLabels = ['Siemens Healthineers', 'GE HealthCare', 'Philips', 'Aidoc', 'Fujifilm / Others'];
-        const vendorColors = ['#2b6cb0', '#319795', '#38a169', '#d69e2e', '#e53e3e'];
-
-        // Total Revenue Pie Chart
-        new Chart(document.getElementById('totalVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: {
-                labels: vendorLabels,
-                datasets: [{
-                    data: [31, 26, 18, 13, 12],
-                    backgroundColor: vendorColors
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-        });
-
-        // Cardiology Revenue Pie Chart
-        new Chart(document.getElementById('cardioVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: {
-                labels: vendorLabels,
-                datasets: [{
-                    data: [35, 28, 20, 7, 10],
-                    backgroundColor: vendorColors
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-        });
-
-        // Pulmonology Revenue Pie Chart
-        new Chart(document.getElementById('pulmoVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: {
-                labels: vendorLabels,
-                datasets: [{
-                    data: [24, 22, 15, 25, 14],
-                    backgroundColor: vendorColors
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-        });
-
-        // Neurology & Oncology Revenue Pie Chart
-        new Chart(document.getElementById('neuroVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: {
-                labels: vendorLabels,
-                datasets: [{
-                    data: [29, 27, 17, 15, 12],
-                    backgroundColor: vendorColors
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-        });
-
         function updateView(regionKey) {
             const selectedRegion = regionData[regionKey] || regionData.global;
 
@@ -776,6 +720,89 @@
             document.getElementById('regionSelect').value = initialRegion;
             updateView(initialRegion);
         });
+    
+        // Vendor Pie Charts Data (Calculated via Public Online Data / CMS Claims)
+        const vendorLabels = ['Siemens Healthineers', 'GE HealthCare', 'Philips', 'Aidoc', 'Fujifilm / Others'];
+        const vendorColors = ['#2b6cb0', '#319795', '#38a169', '#d69e2e', '#e53e3e'];
+
+        // Total Revenue Pie Chart
+        new Chart(document.getElementById('totalVendorChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: vendorLabels,
+                datasets: [{
+                    data: [31, 26, 18, 13, 12],
+                    backgroundColor: vendorColors
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Cardiology Revenue Pie Chart
+        new Chart(document.getElementById('cardioVendorChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: vendorLabels,
+                datasets: [{
+                    data: [35, 28, 20, 7, 10],
+                    backgroundColor: vendorColors
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Pulmonology Revenue Pie Chart
+        new Chart(document.getElementById('pulmoVendorChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: vendorLabels,
+                datasets: [{
+                    data: [24, 22, 15, 25, 14],
+                    backgroundColor: vendorColors
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Neurology Revenue Pie Chart
+        new Chart(document.getElementById('neuroVendorChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: vendorLabels,
+                datasets: [{
+                    data: [29, 27, 17, 15, 12],
+                    backgroundColor: vendorColors
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Breast Revenue Pie Chart
+        new Chart(document.getElementById('breastVendorChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: vendorLabels,
+                datasets: [{
+                    data: [32, 28, 18, 12, 10],
+                    backgroundColor: vendorColors
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Oncology Revenue Pie Chart
+        new Chart(document.getElementById('oncologyVendorChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: vendorLabels,
+                datasets: [{
+                    data: [22, 25, 28, 15, 10],
+                    backgroundColor: vendorColors
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
     </script>
-				</body>
-			</html>
+</body>
+</html>
