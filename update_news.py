@@ -1,8 +1,8 @@
-import re
 import json
 import urllib.request
 import feedparser
 import yfinance as yf
+import re
 
 def fetch_openfda_clearances():
     """Fetch live 510(k) clearances for product code 'LLZ' (Image Processing Systems, Radiological)."""
@@ -29,7 +29,7 @@ def fetch_live_metrics():
     # Fetch XLV MedTech ETF Price
     try:
         xlv = yf.Ticker("XLV")
-        xlv_price = xlv.fast_info.get("lastPrice", 140.0)
+        xlv_price = xlv.fast_info.get('lastPrice', 140.0)
         metrics["xlv_price"] = f"${xlv_price:.1f}"
     except Exception as e:
         print(f"Warning: Failed XLV fetch ({e}). Using fallback.")
@@ -55,7 +55,7 @@ def fetch_live_news():
     
     news_items_html = ""
     for entry in feed.entries[:4]:
-        title = re.sub(r'<[^>]*>', '', entry.title)
+        title = re.sub(r'<[^>]+>', '', entry.title)
         link = entry.link
         source = entry.get('source', {}).get('title', 'Industry News')
         
@@ -88,7 +88,7 @@ def update_dashboard():
 
     # 2. Inject live openFDA clearances total
     content = re.sub(
-        r'totalClearances:\s*"[^"]+"',
+        r'totalClearances:\s*"[^"]*"',
         f'totalClearances: "{fda_total}"',
         content
     )
@@ -102,7 +102,7 @@ def update_dashboard():
 
     # 4. Inject server-fetched UK Rate into Europe region dataset
     content = re.sub(
-        r'uk_rate_val:\s*"[^"]+"',
+        r'uk_rate_val:\s*"[^"]*"',
         f'uk_rate_val: "{metrics["uk_rate"]}"',
         content
     )
@@ -121,7 +121,7 @@ def update_dashboard():
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(content)
-
+        
     print("✅ Dashboard updated successfully.")
 
 if __name__ == "__main__":
