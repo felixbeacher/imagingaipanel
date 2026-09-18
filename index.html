@@ -158,6 +158,14 @@
             color: #718096;
         }
 
+        .footer-disclaimer {
+            font-size: 0.75rem;
+            color: #a0aec0;
+            max-width: 900px;
+            margin: 10px auto 0 auto;
+            line-height: 1.4;
+        }
+
         @media (max-width: 900px) { 
             .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; } 
             .ticker-banner { flex-direction: column; } 
@@ -394,7 +402,10 @@
     </div>
 
     <footer>
-        &copy; 2026 Felix Beacher. All rights reserved.
+        <div>&copy; 2026 Felix Beacher. All rights reserved.</div>
+        <p class="footer-disclaimer">
+            Disclaimer: The information and data provided on this dashboard are for general informational purposes only. Nothing contained on this site constitutes any form of financial advice. While metrics and figures are sourced from public registers, APIs, and market estimates, no warranty is made regarding their completeness, accuracy, or timeliness. The creator assumes no liability for any errors, omissions, or actions taken based on the information provided.
+        </p>
     </footer>
 
     <script>
