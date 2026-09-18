@@ -234,10 +234,10 @@
         <!-- Sector Outlook Summary Unit -->
         <div class="card col-12 outlook-box">
             <div class="outlook-header">
-                <h2>Sector Outlook Summary (12-18 Month View)</h2>
-                <span class="badge-positive">Moderately Bullish</span>
+                <h2 id="outlook-title">Sector Outlook Summary (12-18 Month View)</h2>
+                <span id="outlook-badge" class="badge-positive">Moderately Bullish</span>
             </div>
-            <p class="outlook-summary">
+            <p id="outlook-summary-text" class="outlook-summary">
                 The medical imaging AI sector is rapidly transitioning from algorithm validation to large-scale clinical integration. Structural workforce shortages in radiology and growing scan backlogs provide strong demand resilience against broader macroeconomic headwinds. High central bank interest rates continue to extend hospital capital purchasing cycles, but adoption is steadily sustained by clear reimbursement pathway expansions and integrated platform partnerships with major original equipment manufacturers. Healthcare providers are increasingly shifting their strategic focus from isolated point solutions to enterprise-wide orchestration hubs to streamline diagnostic workflows. Cloud-based deployments are accelerating rapidly due to lower compute overheads and easier IT integration. Although venture capital funding has tightened, creating a clear divide between established market leaders and smaller vendors, overall sector growth remains robust. Positioned to surpass two billion dollars in value, medical imaging AI reflects a permanent structural shift toward data-driven, highly efficient diagnostic care pathways globally.
             </p>
             
@@ -413,6 +413,11 @@
 
         const regionData = {
             global: {
+                outlook: {
+                    title: "Sector Outlook Summary (12-18 Month View - Global)",
+                    badge: "Moderately Bullish",
+                    text: "The medical imaging AI sector is rapidly transitioning from algorithm validation to large-scale clinical integration. Structural workforce shortages in radiology and growing scan backlogs provide strong demand resilience against broader macroeconomic headwinds. High central bank interest rates continue to extend hospital capital purchasing cycles, but adoption is steadily sustained by clear reimbursement pathway expansions and integrated platform partnerships with major original equipment manufacturers. Healthcare providers are increasingly shifting their strategic focus from isolated point solutions to enterprise-wide orchestration hubs to streamline diagnostic workflows. Cloud-based deployments are accelerating rapidly due to lower compute overheads and easier IT integration. Although venture capital funding has tightened, creating a clear divide between established market leaders and smaller vendors, overall sector growth remains robust. Positioned to surpass two billion dollars in value, medical imaging AI reflects a permanent structural shift toward data-driven, highly efficient diagnostic care pathways globally."
+                },
                 ticker1: { label: "Central Bank Policy", val: "3.85%", sub: "G7 Weighted Avg", desc: "Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems." },
                 ticker2: { label: "Healthcare Inflation", val: "3.8%", sub: "Global Services CPI", desc: "Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains." },
                 ticker3: { label: "MedTech Index (XLV)", val: "$142.5 (XLV)", sub: "Sector Benchmark", desc: "Reflects healthcare sector equity valuations and broader investment appetite." },
@@ -436,6 +441,11 @@
                 }
             },
             europe: {
+                outlook: {
+                    title: "Sector Outlook Summary (12-18 Month View - Europe)",
+                    badge: "Bullish",
+                    text: "European medical imaging AI adoption is accelerating through targeted national health service funding mandates and integrated framework agreements. Despite regulatory complexities tied to the ongoing transition toward EU MDR compliance, clinical demand remains exceptionally robust due to severe radiologist deficits across NHS trusts and continental European health systems. National initiatives focusing on lung cancer and stroke pathway triage are driving rapid software deployment. Cloud platform adoption is gaining momentum as data residency assurances improve, offering sustainable operational efficiencies amid persistent public healthcare budget constraints."
+                },
                 ticker1: { label: "UK Base Rate", uk_rate_val: "3.75%", val: "3.75%", sub: "Bank of England Benchmark", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
                 ticker2: { label: "Healthcare Inflation", val: "3.2%", sub: "UK YoY Services CPI", desc: "Measures operational costs in UK/EU healthcare systems." },
                 ticker3: { label: "MedTech VC Funding", val: "£520M", sub: "+8% Q2 Capital Inflow", desc: "Venture capital deployed into European medical technology startups." },
@@ -459,6 +469,11 @@
                 }
             },
             northAmerica: {
+                outlook: {
+                    title: "Sector Outlook Summary (12-18 Month View - North America)",
+                    badge: "Highly Bullish",
+                    text: "The North American market represents the most commercially mature ecosystem for medical imaging AI, underpinned by established Category I CPT reimbursement codes and expanding enterprise PACS marketplace platforms. Hospital networks across the US and Canada are prioritizing scalable AI orchestration to mitigate severe clinician shortages and streamline high-volume diagnostic workflows. Although elevated interest rates continue to affect hospital capital expenditure cycles, vendors benefit from expedited regulatory paths via updated FDA pre-specifications and robust venture capital backing."
+                },
                 ticker1: { label: "US Fed Funds Rate", val: "4.25%", sub: "Federal Reserve Target", desc: "Determines North American commercial borrowing conditions." },
                 ticker2: { label: "US Healthcare CPI", val: "4.1%", sub: "Medical Care Services Index", desc: "Inflation metric across US private and public hospital systems." },
                 ticker3: { label: "MedTech VC Funding", val: "$1.8B", sub: "+15% Q2 Capital Inflow", desc: "US & Canadian venture capital deal volume in digital health." },
@@ -482,6 +497,11 @@
                 }
             },
             asia: {
+                outlook: {
+                    title: "Sector Outlook Summary (12-18 Month View - Asia)",
+                    badge: "Growth Potential",
+                    text: "The Asia-Pacific region is experiencing rapid adoption driven by massive patient volumes, centralized government healthcare investments, and aggressive local regulatory pathways. Tier-1 and tier-2 hospital networks are implementing screening AI tools to counteract geographical disparities in specialist availability. While domestic regulatory agencies like China's NMPA and Japan's PMDA accelerate clearances for homegrown algorithms, foreign market entrants must carefully navigate strict local data residency mandates and hybrid on-premise deployment requirements."
+                },
                 ticker1: { label: "Regional Policy Rate", val: "2.10%", sub: "APAC Weighted Avg", desc: "Baseline borrowing costs across key East Asian markets." },
                 ticker2: { label: "Healthcare Inflation", val: "2.9%", sub: "APAC Services CPI", desc: "Measures medical operational costs in the APAC region." },
                 ticker3: { label: "MedTech VC Funding", val: "$620M", sub: "+10% Q2 Inflow", desc: "Venture investment in China, Japan, and Asia-Pacific startups." },
@@ -505,6 +525,11 @@
                 }
             },
             middleEast: {
+                outlook: {
+                    title: "Sector Outlook Summary (12-18 Month View - Middle East)",
+                    badge: "Rapid Expansion",
+                    text: "Middle Eastern healthcare markets are undergoing substantial transformation backed by well-funded national health modernization strategies, particularly across the GCC. Mega-hospital developments and centralized digital health initiatives are prioritizing cutting-edge AI technologies for national screening campaigns and diagnostic workflow optimization. Major international vendors are establishing dedicated local data centers to comply with regional sovereignty regulations, positioning the market as a high-growth zone for advanced enterprise medical imaging solutions."
+                },
                 ticker1: { label: "Interbank Benchmark", val: "4.75%", sub: "GCC Average", desc: "Cost of borrowing across GCC financial markets." },
                 ticker2: { label: "Healthcare Inflation", val: "3.5%", sub: "Regional CPI", desc: "Operational cost trends in private healthcare." },
                 ticker3: { label: "MedTech VC Funding", val: "$180M", sub: "+18% Q2 Inflow", desc: "Capital flow into Middle Eastern digital health initiatives." },
@@ -528,6 +553,11 @@
                 }
             },
             southAmerica: {
+                outlook: {
+                    title: "Sector Outlook Summary (12-18 Month View - South America)",
+                    badge: "Emerging Market",
+                    text: "South American medical imaging AI adoption is characterized by a strong tier-1 private healthcare focus working around constraints in public sector capital expenditure. Regulatory agencies like ANVISA in Brazil are progressively streamlining Software as a Medical Device (SaMD) approval frameworks to encourage international software integration. Teleradiology networks spanning vast rural regions are increasingly turning to automated AI triage tools to manage significant diagnostic backlogs despite high local inflation and borrowing costs."
+                },
                 ticker1: { label: "Central Bank Avg", val: "9.50%", sub: "LATAM Benchmark", desc: "Average interest rates affecting LATAM hospital CapEx." },
                 ticker2: { label: "Healthcare Inflation", val: "6.2%", sub: "LATAM Medical CPI", desc: "High local inflation driving need for operational efficiency." },
                 ticker3: { label: "MedTech VC Funding", val: "$95M", sub: "+5% Q2 Inflow", desc: "Venture capital investment across Latin American health tech." },
@@ -665,6 +695,12 @@
 
         function updateView(regionKey) {
             const selectedRegion = regionData[regionKey] || regionData.global;
+
+            if (selectedRegion.outlook) {
+                document.getElementById('outlook-title').innerText = selectedRegion.outlook.title;
+                document.getElementById('outlook-badge').innerText = selectedRegion.outlook.badge;
+                document.getElementById('outlook-summary-text').innerText = selectedRegion.outlook.text;
+            }
 
             document.getElementById('ticker1-label').innerText = selectedRegion.ticker1.label;
             document.getElementById('ticker1-val').innerText = selectedRegion.ticker1.val;
