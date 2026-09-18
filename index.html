@@ -76,8 +76,48 @@ def update_dashboard():
         content = f.read()
 
     # 1. Inject news HTML strictly inside the news container
-    if "<!-- NEWS_ITEMS_PLACEHOLDER -->" in content:
-        content = content.replace("<!-- NEWS_ITEMS_PLACEHOLDER -->", news_html)
+    if "
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE9fVEN2VWJmc2lVM05oWE1aZDFvMnFDNXJHMGJLbDhEQ3E2RnlTMmFVMlRsRFMwdHdrMndBbldScXhiU0w3Zk1FcmxHSEUtR1NzSWRn?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">The Toughest AGI Battle Unfolds in Hospitals: Groundbreaking Chinese AI Research Published in Science, Doctors Champion Early Official Rollout Over Job Loss Fears - 36 Kr</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> 36 Kr</div>
+        </div>
+        
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMizAFBVV95cUxPckN0VUt2Z0RYblJrSThIS2U1UUlTYS1XVUM5X20tYldncGp5WGVWRmF4SGdTNjhwNkJ1T05rczhoY1JUbWVGdkF1ZDZIQk5NekMwMi02TXFNUXJZZzRWQmFKaFoxaWpwQkNIeHJwamNoT2xhSkR3YU9IanpwbWdrYmRscDk4N3NVTS04SFB0dGtIVGtvdGhlQU1ydW0xdUZOUGZCRnVPRTNIblNaR1RfQkFFZV9KUlMwcjVfOE1acTlpdDZVTUFnZ2dXSTc?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">AI Is Transforming Medical Imaging: FDA Approvals, Smarter Scans and the Next Era of Radiology - Spherical Insights</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> Spherical Insights</div>
+        </div>
+        
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMifEFVX3lxTFBucm8wSks0Nk9Nb296elhFYVBJYkMxQ3liTmt6eXJOU1Y0eWdsWFYwY1E2LW1PRHhjbjBHdzJsNDhnX0ZlclJucFdCeXVpWWs2Ym9fZjJDNWxCUjJteHZ0NUNDNGZJT0VtSnYyWlo3ZlhRRFZyM1AwS1NhMGs?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">Ultrasound AI Receives Two New Patents | - Imaging Technology News</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> Imaging Technology News</div>
+        </div>
+        
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMiqgFBVV95cUxNTXdiN1djY2lkWlRkc0xBc2Z5b1gtRjNYRy12YXhKS3hlRHNLYWZkX1c3d0ItNUxIZVRmWDFBX2hjVWllUmttQ2ZUVlg1MGNPU0U1OVpGNEt3U1N1a2hfM3dycHBNdTAyVXZhMWRwajhZalA5VThHdkVteHQ3ckxPVWt3R3hpLXBBVDlqWWR4c2RJVmc1a18tVWpkMkJXUFM4OVA5ZHFvNkRLQQ?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">New AI technique could make minimally invasive surgeries safer and more precise - MIT News</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> MIT News</div>
+        </div>
+        " in content:
+        content = content.replace("
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE9fVEN2VWJmc2lVM05oWE1aZDFvMnFDNXJHMGJLbDhEQ3E2RnlTMmFVMlRsRFMwdHdrMndBbldScXhiU0w3Zk1FcmxHSEUtR1NzSWRn?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">The Toughest AGI Battle Unfolds in Hospitals: Groundbreaking Chinese AI Research Published in Science, Doctors Champion Early Official Rollout Over Job Loss Fears - 36 Kr</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> 36 Kr</div>
+        </div>
+        
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMizAFBVV95cUxPckN0VUt2Z0RYblJrSThIS2U1UUlTYS1XVUM5X20tYldncGp5WGVWRmF4SGdTNjhwNkJ1T05rczhoY1JUbWVGdkF1ZDZIQk5NekMwMi02TXFNUXJZZzRWQmFKaFoxaWpwQkNIeHJwamNoT2xhSkR3YU9IanpwbWdrYmRscDk4N3NVTS04SFB0dGtIVGtvdGhlQU1ydW0xdUZOUGZCRnVPRTNIblNaR1RfQkFFZV9KUlMwcjVfOE1acTlpdDZVTUFnZ2dXSTc?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">AI Is Transforming Medical Imaging: FDA Approvals, Smarter Scans and the Next Era of Radiology - Spherical Insights</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> Spherical Insights</div>
+        </div>
+        
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMifEFVX3lxTFBucm8wSks0Nk9Nb296elhFYVBJYkMxQ3liTmt6eXJOU1Y0eWdsWFYwY1E2LW1PRHhjbjBHdzJsNDhnX0ZlclJucFdCeXVpWWs2Ym9fZjJDNWxCUjJteHZ0NUNDNGZJT0VtSnYyWlo3ZlhRRFZyM1AwS1NhMGs?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">Ultrasound AI Receives Two New Patents | - Imaging Technology News</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> Imaging Technology News</div>
+        </div>
+        
+        <div class="news-item">
+            <a href="https://news.google.com/rss/articles/CBMiqgFBVV95cUxNTXdiN1djY2lkWlRkc0xBc2Z5b1gtRjNYRy12YXhKS3hlRHNLYWZkX1c3d0ItNUxIZVRmWDFBX2hjVWllUmttQ2ZUVlg1MGNPU0U1OVpGNEt3U1N1a2hfM3dycHBNdTAyVXZhMWRwajhZalA5VThHdkVteHQ3ckxPVWt3R3hpLXBBVDlqWWR4c2RJVmc1a18tVWpkMkJXUFM4OVA5ZHFvNkRLQQ?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">New AI technique could make minimally invasive surgeries safer and more precise - MIT News</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> MIT News</div>
+        </div>
+        ", news_html)
     else:
         content = re.sub(
             r'(<div id="news-feed-container">)(.*?)(</div>)',
@@ -89,7 +129,7 @@ def update_dashboard():
     # 2. Inject live openFDA clearances total
     content = re.sub(
         r'totalClearances:\s*"[^"]+"',
-        f'totalClearances: "{fda_total}"',
+        f'totalClearances: "2287"',
         content
     )
 
@@ -103,7 +143,7 @@ def update_dashboard():
     # 4. Inject server-fetched UK Rate into Europe region dataset
     content = re.sub(
         r'uk_rate_val:\s*"[^"]+"',
-        f'uk_rate_val: "{metrics["uk_rate"]}"',
+        f'uk_rate_val: "3.75%"uk_rate"]}"',
         content
     )
 
