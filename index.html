@@ -1,711 +1,128 @@
-<!DOCTYPE html>
-<html lang="en-GB">
-<head>
-	<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Imaging AI & Health Macro Dashboard</title>
+import re
+import json
+import urllib.request
+import feedparser
+import yfinance as yf
+
+def fetch_openfda_clearances():
+    """Fetch live 510(k) clearances for product code 'LLZ' (Image Processing Systems, Radiological)."""
+    url = "https://api.fda.gov/device/510k.json?search=product_code:LLZ&limit=1"
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req) as response:
+            data = json.loads(response.read().decode())
+            total = data.get("meta", {}).get("results", {}).get("total", 142)
+            return str(total)
+    except Exception as e:
+        print(f"Warning: Failed openFDA fetch ({e}). Using fallback.")
+        return "142"
+
+def fetch_live_metrics():
+    """Fetch live market proxies via yfinance and central bank benchmarks."""
+    metrics = {
+        "xlv_price": "$142.5",
+        "uk_rate": "3.75%",
+        "dow_6m": [48200, 49100, 50300, 51400, 52800, 51778],
+        "ftse_6m": [10200, 10350, 10400, 10600, 10850, 10774]
+    }
     
-	<!-- Browser Tab Icon (Favicon) -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8F%A5%3C/text%3E%3C/svg%3E">
-	<!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #f4f6f8; color: #333; padding: 20px; }
-        
-        header { 
-            margin-bottom: 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        header h1 { font-size: 1.8rem; color: #1a202c; margin-bottom: 6px; }
-        
-        .header-desc {
-            font-size: 0.95rem;
-            color: #4a5568;
-            max-width: 900px;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
+    # Fetch XLV MedTech ETF Price
+    try:
+        xlv = yf.Ticker("XLV")
+        xlv_price = xlv.fast_info.get("lastPrice", 140.0)
+        metrics["xlv_price"] = f"${xlv_price:.1f}"
+    except Exception as e:
+        print(f"Warning: Failed XLV fetch ({e}). Using fallback.")
 
-        .author-bio {
-            font-size: 0.85rem;
-            color: #718096;
-            font-style: italic;
-        }
-
-        .region-filter-container {
-            background: #ffffff;
-            padding: 10px 16px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .region-filter-container label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #2d3748;
-            text-transform: uppercase;
-        }
-
-        .region-filter-container select {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            font-size: 0.9rem;
-            color: #2b6cb0;
-            font-weight: 600;
-            background-color: #f8fafc;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .ticker-banner { display: flex; gap: 15px; margin-bottom: 20px; overflow-x: auto; }
-        .ticker-card { background: #ffffff; border-radius: 6px; padding: 12px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; flex: 1; min-width: 170px; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
-        .card { background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .card h2 { font-size: 1.1rem; margin-bottom: 15px; color: #2d3748; border-bottom: 2px solid #edf2f7; padding-bottom: 8px; }
-        
-        .col-3 { grid-column: span 3; }
-        .col-4 { grid-column: span 4; }
-        .col-6 { grid-column: span 6; }
-        .col-8 { grid-column: span 8; }
-        .col-12 { grid-column: span 12; }
-        
-        .outlook-box { background: linear-gradient(135deg, #ebf8ff 0%, #ffffff 100%); border-left: 4px solid #3182ce; }
-        .outlook-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .badge-positive { background-color: #c6f6d5; color: #22543d; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px; text-transform: uppercase; }
-        .outlook-summary { font-size: 0.95rem; line-height: 1.5; color: #2d3748; margin-bottom: 15px; }
-        
-        .outlook-factors-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
-        }
-        
-        .factor-column h3 {
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .drivers-column h3 { color: #276749; }
-        .headwinds-column h3 { color: #9b2c2c; }
-
-        .factor-list {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .factor-card {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 10px;
-        }
-
-        .factor-card-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 4px;
-        }
-
-        .factor-card-text {
-            font-size: 0.8rem;
-            color: #4a5568;
-            line-height: 1.35;
-        }
-
-        #news-feed-container {
-            max-height: 420px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        
-        .news-item { margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #edf2f7; }
-        .news-item:last-child { border-bottom: none; margin-bottom: 0; }
-        .news-title { font-weight: 600; text-decoration: none; color: #2b6cb0; display: block; word-break: break-word; }
-        .news-title:hover { text-decoration: underline; }
-        .news-meta { font-size: 0.8rem; color: #718096; margin-top: 4px; }
-        .news-tag { display: inline-block; background: #edf2f7; color: #4a5568; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-right: 5px; font-weight: 600; }
-        
-        .metric { font-size: 1.8rem; font-weight: bold; color: #2b6cb0; }
-        .metric a { color: inherit; text-decoration: none; }
-        .metric a:hover { text-decoration: underline; }
-        .metric-label { font-size: 0.85rem; font-weight: 600; color: #2d3748; }
-        .metric-sub { font-size: 0.75rem; color: #38a169; margin-top: 2px; margin-bottom: 6px; }
-        .metric-desc { font-size: 0.75rem; color: #718096; line-height: 1.35; border-top: 1px solid #f0f4f8; padding-top: 6px; margin-top: 4px; }
-        
-        footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #e2e8f0;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #718096;
-        }
-
-        @media (max-width: 900px) { 
-            .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; } 
-            .ticker-banner { flex-direction: column; } 
-            .outlook-factors-grid { grid-template-columns: 1fr; }
-            .factor-list { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div>
-            <h1>Medical Imaging AI & Macroeconomic Dashboard</h1>
-            <p class="header-desc">An executive intelligence dashboard, using AI for real-time monitoring of industry news, regulatory trends, macroeconomic indicators, and adoption in medical imaging AI.</p>
-            <p class="author-bio">Created and managed by Felix Beacher, PhD.</p>
-        </div>
-        <div class="region-filter-container">
-            <label for="regionSelect">Region View:</label>
-            <select id="regionSelect">
-                <option value="global">Global (Whole World)</option>
-                <option value="northAmerica">North America</option>
-                <option value="europe">Europe</option>
-                <option value="asia">Asia</option>
-                <option value="middleEast">Middle East</option>
-                <option value="southAmerica">South America</option>
-            </select>
-        </div>
-    </header>
-
-    <!-- Top Macro Indicators Ticker (Dynamic) -->
-    <div class="ticker-banner">
-        <div class="ticker-card">
-            <div class="metric-label" id="ticker1-label">Central Bank Policy</div>
-            <div class="metric" id="ticker1-val">3.85%</div>
-            <div class="metric-sub" id="ticker1-sub">G7 Weighted Avg</div>
-            <p class="metric-desc" id="ticker1-desc">Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems.</p>
-        </div>
-        <div class="ticker-card">
-            <div class="metric-label" id="ticker2-label">Healthcare Inflation</div>
-            <div class="metric" id="ticker2-val">3.8%</div>
-            <div class="metric-sub" id="ticker2-sub">Global Services CPI</div>
-            <p class="metric-desc" id="ticker2-desc">Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains.</p>
-        </div>
-        <div class="ticker-card">
-            <div class="metric-label" id="ticker3-label">MedTech Index (XLV)</div>
-            <div class="metric" id="ticker3-val">$142.5 (XLV)</div>
-            <div class="metric-sub" id="ticker3-sub">Sector Benchmark</div>
-            <p class="metric-desc" id="ticker3-desc">Reflects healthcare sector equity valuations and broader investment appetite.</p>
-        </div>
-        <div class="ticker-card">
-            <div class="metric-label" id="ticker4-label">Imaging Demand Backlog</div>
-            <div class="metric" id="ticker4-val">4.2M</div>
-            <div class="metric-sub" id="ticker4-sub">Est. Global Pending Scans</div>
-            <p class="metric-desc" id="ticker4-desc">Highlights worldwide clinical backlog volume, underscoring the need for automated triage.</p>
-        </div>
-        <div class="ticker-card">
-            <div class="metric-label" id="ticker5-label">Cloud Inference Index</div>
-            <div class="metric" id="ticker5-val">-8.5%</div>
-            <div class="metric-sub" id="ticker5-sub">Compute Cost YoY</div>
-            <p class="metric-desc" id="ticker5-desc">Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins.</p>
-        </div>
-    </div>
-
-    <div class="dashboard-grid">
-        
-        <!-- Sector Outlook Summary Unit -->
-        <div class="card col-12 outlook-box">
-            <div class="outlook-header">
-                <h2>Sector Outlook Summary (12-18 Month View)</h2>
-                <span class="badge-positive">Moderately Bullish</span>
-            </div>
-            <p class="outlook-summary">
-                The medical imaging AI sector is transitioning from algorithm validation to large-scale clinical integration. Structural workforce shortages in radiology and growing scan backlogs provide strong demand resilience against wider macroeconomic headwinds. High central bank interest rates continue to extend capital purchasing cycles, but adoption is sustained by clear reimbursement pathway expansions and integrated platform partnerships with major OEMs.
-            </p>
+    # Fetch 6-Month Trailing Monthly History for Stock Indices
+    try:
+        dow_hist = yf.Ticker("^DJI").history(period="6m", interval="1mo")['Close'].dropna().tolist()
+        if len(dow_hist) >= 6:
+            metrics["dow_6m"] = [int(val) for val in dow_hist[-6:]]
             
-            <div class="outlook-factors-grid">
-                <!-- 4 Key Growth Drivers -->
-                <div class="factor-column drivers-column">
-                    <h3>Primary Growth Drivers</h3>
-                    <div class="factor-list">
-                        <div class="factor-card">
-                            <div class="factor-card-title">Workforce Shortages</div>
-                            <div class="factor-card-text">Severe radiologist deficits forcing trusts to deploy automated triage and assistance tools.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title">Reimbursement Expansion</div>
-                            <div class="factor-card-text">New dedicated CPT and national health service billing codes unlocking direct provider revenue.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title">OEM Platform Integration</div>
-                            <div class="factor-card-text">Major PACS and imaging vendors bundling AI directly into hardware software stacks.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title">Clinical Evidence Growth</div>
-                            <div class="factor-card-text">Expanding prospective validation studies demonstrating clear ROI and diagnostic accuracy gains.</div>
-                        </div>
-                    </div>
-                </div>
+        ftse_hist = yf.Ticker("^FTSE").history(period="6m", interval="1mo")['Close'].dropna().tolist()
+        if len(ftse_hist) >= 6:
+            metrics["ftse_6m"] = [int(val) for val in ftse_hist[-6:]]
+    except Exception as e:
+        print(f"Warning: Failed Index history fetch ({e}). Using fallback.")
 
-                <!-- 4 Key Headwinds -->
-                <div class="factor-column headwinds-column">
-                    <h3>Key Sector Headwinds</h3>
-                    <div class="factor-list">
-                        <div class="factor-card">
-                            <div class="factor-card-title">Elevated Cost of Capital</div>
-                            <div class="factor-card-text">High interest rates stretching hospital procurement cycles and dampening venture capital.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title">IT Integration Friction</div>
-                            <div class="factor-card-text">Complex hospital IT architecture and cybersecurity requirements delaying deployment timelines.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title">Regulatory Scrubbing</div>
-                            <div class="factor-card-text">Stricter post-market surveillance demands increasing post-clearance compliance overheads.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title">Hospital CapEx Pressure</div>
-                            <div class="factor-card-text">Tight public and private healthcare budgets forcing tough prioritization against core infrastructure.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    return metrics
 
-        <!-- Key Sector Metrics -->
-        <div class="card col-3">
-            <div class="metric-label">FDA Clearances (LLZ Category)</div>
-            <div class="metric" id="clearances-metric">142</div>
-            <div class="metric-sub">Radiology Image Processing</div>
-            <p class="metric-desc">Tracks FDA 510(k) clearances under product code LLZ via openFDA live API.</p>
-        </div>
-        <div class="card col-3">
-            <div class="metric-label">Radiologist Vacancy Rate</div>
-            <div class="metric">12.4%</div>
-            <div class="metric-sub">High Workforce Deficit</div>
-            <p class="metric-desc">Measures unfilled clinical posts, underscoring the structural need for automated productivity solutions.</p>
-        </div>
-        <div class="card col-3">
-            <div class="metric-label">Reimbursement Adoption</div>
-            <div class="metric">34.2%</div>
-            <div class="metric-sub">Hospitals with Active Billing</div>
-            <p class="metric-desc">Indicates the percentage of providers successfully claiming active tariffs or codes for AI-assisted procedures.</p>
-        </div>
-        <div class="card col-3">
-            <div class="metric-label">Prospective Clinical Validation</div>
-            <div class="metric">86</div>
-            <div class="metric-sub">Peer-Reviewed Papers YTD</div>
-            <p class="metric-desc">Quantifies real-world clinical evidence publications needed to convince hospital procurement committees.</p>
-        </div>
-
-        <!-- Graph Unit 1: Approvals vs VC Funding -->
-        <div class="card col-8">
-            <h2>AI Approvals vs. MedTech Venture Capital Investment</h2>
-            <canvas id="approvalsChart"></canvas>
-        </div>
-
-        <!-- Text Unit: Targeted News Feed -->
-        <div class="card col-4">
-            <h2>Latest Industry Headlines</h2>
-            <div id="news-feed-container">
-                
-        <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMiU0FVX3lxTE9fVEN2VWJmc2lVM05oWE1aZDFvMnFDNXJHMGJLbDhEQ3E2RnlTMmFVMlRsRFMwdHdrMndBbldScXhiU0w3Zk1FcmxHSEUtR1NzSWRn?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">The Toughest AGI Battle Unfolds in Hospitals: Groundbreaking Chinese AI Research Published in Science, Doctors Champion Early Official Rollout Over Job Loss Fears - 36 Kr</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> 36 Kr</div>
-        </div>
+def fetch_live_news():
+    """Fetch live news via Google News RSS."""
+    rss_url = "https://news.google.com/rss/search?q=medical+imaging+AI&hl=en-GB&gl=GB&ceid=GB:en"
+    feed = feedparser.parse(rss_url)
+    
+    news_items_html = ""
+    for entry in feed.entries[:4]:
+        title = re.sub(r'<[^>]*>', '', entry.title)
+        link = entry.link
+        source = entry.get('source', {}).get('title', 'Industry News')
         
+        news_items_html += f'''
         <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMizAFBVV95cUxPckN0VUt2Z0RYblJrSThIS2U1UUlTYS1XVUM5X20tYldncGp5WGVWRmF4SGdTNjhwNkJ1T05rczhoY1JUbWVGdkF1ZDZIQk5NekMwMi02TXFNUXJZZzRWQmFKaFoxaWpwQkNIeHJwamNoT2xhSkR3YU9IanpwbWdrYmRscDk4N3NVTS04SFB0dGtIVGtvdGhlQU1ydW0xdUZOUGZCRnVPRTNIblNaR1RfQkFFZV9KUlMwcjVfOE1acTlpdDZVTUFnZ2dXSTc?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">AI Is Transforming Medical Imaging: FDA Approvals, Smarter Scans and the Next Era of Radiology - Spherical Insights</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> Spherical Insights</div>
+            <a href="{link}" target="_blank" rel="noopener noreferrer" class="news-title">{title}</a>
+            <div class="news-meta"><span class="news-tag">LIVE</span> {source}</div>
         </div>
-        
-        <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMifEFVX3lxTFBucm8wSks0Nk9Nb296elhFYVBJYkMxQ3liTmt6eXJOU1Y0eWdsWFYwY1E2LW1PRHhjbjBHdzJsNDhnX0ZlclJucFdCeXVpWWs2Ym9fZjJDNWxCUjJteHZ0NUNDNGZJT0VtSnYyWlo3ZlhRRFZyM1AwS1NhMGs?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">Ultrasound AI Receives Two New Patents | - itnonline.com</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> itnonline.com</div>
-        </div>
-        
-        <div class="news-item">
-            <a href="https://news.google.com/rss/articles/CBMiqgFBVV95cUxNTXdiN1djY2lkWlRkc0xBc2Z5b1gtRjNYRy12YXhKS3hlRHNLYWZkX1c3d0ItNUxIZVRmWDFBX2hjVWllUmttQ2ZUVlg1MGNPU0U1OVpGNEt3U1N1a2hfM3dycHBNdTAyVXZhMWRwajhZalA5VThHdkVteHQ3ckxPVWt3R3hpLXBBVDlqWWR4c2RJVmc1a18tVWpkMkJXUFM4OVA5ZHFvNkRLQQ?oc=5" target="_blank" rel="noopener noreferrer" class="news-title">New AI technique could make minimally invasive surgeries safer and more precise - MIT News</a>
-            <div class="news-meta"><span class="news-tag">LIVE</span> MIT News</div>
-        </div>
-        
-            </div>
-        </div>
+        '''
+    return news_items_html
 
-        <!-- Graph Unit 2: Modality Breakdown -->
-        <div class="card col-6">
-            <h2>AI Clearances by Imaging Modality</h2>
-            <canvas id="modalityChart"></canvas>
-            <p class="metric-desc" style="margin-top: 15px;">
-                CT and MRI account for over 60% of overall regulatory clearances due to high scan complexity, heavy clinical workloads, and strong reimbursement coverage. Emerging modalities like Digital Pathology and Point-of-Care Ultrasound show accelerated relative growth as algorithms move beyond traditional cross-sectional imaging.
-            </p>
-        </div>
+def update_dashboard():
+    fda_total = fetch_openfda_clearances()
+    metrics = fetch_live_metrics()
+    news_html = fetch_live_news()
 
-        <!-- Graph Unit 3: Stock Index vs Interest Rate Graph (6-Month View) -->
-        <div class="card col-6">
-            <h2 id="macroChartTitle">Stock Market Index & Interest Rates (6-Month View)</h2>
-            <canvas id="macroChart"></canvas>
-            <p class="metric-desc" style="margin-top: 15px;">
-                Illustrates the 6-month trailing correlation between broad market equity valuations and regional central bank interest rates shaping enterprise health spending.
-            </p>
-        </div>
+    with open("index.html", "r", encoding="utf-8") as f:
+        content = f.read()
 
-        <!-- Dynamic Regional Operational Highlights -->
-        <div class="card col-12">
-            <h2 id="highlights-title">Regional Operational Highlights</h2>
-            <div class="news-item">
-                <strong id="hl1-title">Demographic Demand:</strong> 
-                <span id="hl1-text">Global population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes worldwide.</span>
-            </div>
-            <div class="news-item">
-                <strong id="hl2-title">Procurement Timeline:</strong> 
-                <span id="hl2-text">Average enterprise contract closing cycle is currently 9.4 months across major health networks.</span>
-            </div>
-            <div class="news-item">
-                <strong id="hl3-title">Compute Overhead:</strong> 
-                <span id="hl3-text">Cloud processing expenditure per 1,000 inference scans has decreased by 8.5% YoY.</span>
-            </div>
-        </div>
+    # 1. Inject news HTML strictly inside the news container
+    if "<!-- NEWS_ITEMS_PLACEHOLDER -->" in content:
+        content = content.replace("<!-- NEWS_ITEMS_PLACEHOLDER -->", news_html)
+    else:
+        content = re.sub(
+            r'(<div id="news-feed-container">)(.*?)(</div>)',
+            rf'\1\n{news_html}\n\3',
+            content,
+            flags=re.DOTALL
+        )
 
-    </div>
+    # 2. Inject live openFDA clearances total
+    content = re.sub(
+        r'totalClearances:\s*"[^"]+"',
+        f'totalClearances: "{fda_total}"',
+        content
+    )
 
-    <footer>
-        &copy; 2026 Felix Beacher. All rights reserved.
-    </footer>
+    # 3. Inject live XLV ETF stock price
+    content = re.sub(
+        r'val:\s*"[^"]*\(XLV\)"',
+        f'val: "{metrics["xlv_price"]} (XLV)"',
+        content
+    )
 
-    <script>
-        const monthLabels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+    # 4. Inject server-fetched UK Rate into Europe region dataset
+    content = re.sub(
+        r'uk_rate_val:\s*"[^"]+"',
+        f'uk_rate_val: "{metrics["uk_rate"]}"',
+        content
+    )
 
-        const regionData = {
-            global: {
-                ticker1: { label: "Central Bank Policy", val: "3.85%", sub: "G7 Weighted Avg", desc: "Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems." },
-                ticker2: { label: "Healthcare Inflation", val: "3.8%", sub: "Global Services CPI", desc: "Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains." },
-                ticker3: { label: "MedTech Index (XLV)", val: "$168.8 (XLV)", sub: "Sector Benchmark", desc: "Reflects healthcare sector equity valuations and broader investment appetite." },
-                ticker4: { label: "Imaging Demand Backlog", val: "4.2M", sub: "Est. Global Pending Scans", desc: "Highlights worldwide clinical backlog volume, underscoring the need for automated triage." },
-                ticker5: { label: "Cloud Inference Index", val: "-8.5%", sub: "Compute Cost YoY", desc: "Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins." },
-                clearances: [18, 24, 29, 35, 40, 48],
-                vcFunding: [210, 280, 250, 310, 390, 420],
-                modalities: [35, 28, 20, 12, 5],
-                totalClearances: "2287",
-                indexName: "MSCI World Index",
-                indexData: [3150, 3210, 3280, 3340, 3390, 3420],
-                ratesData: [5.25, 5.00, 4.50, 4.25, 4.00, 3.85],
-                highlights: {
-                    title: "Global Operational Highlights",
-                    hl1Title: "Demographic Demand:",
-                    hl1Text: "Global population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes worldwide.",
-                    hl2Title: "Procurement Timeline:",
-                    hl2Text: "Average enterprise contract closing cycle is currently 9.4 months across major health networks.",
-                    hl3Title: "Compute Overhead:",
-                    hl3Text: "Cloud processing expenditure per 1,000 inference scans has decreased by 8.5% YoY."
-                }
-            },
-            europe: {
-                ticker1: { label: "UK Base Rate", uk_rate_val: "3.75%", val: "3.75%", sub: "Bank of England Benchmark", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
-                ticker2: { label: "Healthcare Inflation", val: "3.2%", sub: "UK YoY Services CPI", desc: "Measures operational costs in UK/EU healthcare systems." },
-                ticker3: { label: "MedTech VC Funding", val: "£520M", sub: "+8% Q2 Capital Inflow", desc: "Venture capital deployed into European medical technology startups." },
-                ticker4: { label: "NHS Imaging Backlog", val: "612K", sub: "Patients Awaiting Scans", desc: "Highlights outstanding scan volumes across UK NHS trusts." },
-                ticker5: { label: "Cloud Inference Index", val: "-8.5%", sub: "Compute Cost YoY", desc: "Tracks cloud hosting costs for regional deployment." },
-                clearances: [5, 7, 8, 10, 11, 14],
-                vcFunding: [60, 80, 70, 85, 110, 120],
-                modalities: [32, 30, 22, 11, 5],
-                totalClearances: "2287",
-                indexName: "FTSE 100",
-                indexData: ftse_6m_data: [10200, 10350, 10400, 10600, 10850, 10774],
-                ratesData: [5.25, 5.00, 4.75, 4.25, 4.00, 3.75],
-                highlights: {
-                    title: "European Operational Highlights",
-                    hl1Title: "NHS Tariff Expansion:",
-                    hl1Text: "MedTech Funding Mandate supporting accelerated adoption for AI stroke and lung screening triage.",
-                    hl2Title: "CE Mark Transition:",
-                    hl2Text: "MDR compliance delays continue to push average European software-as-a-medical-device clearance to 14 months.",
-                    hl3Title: "Workforce Strain:",
-                    hl3Text: "Royal College of Radiologists reports a 29% consultant shortage, driving automated reporting demand."
-                }
-            },
-            northAmerica: {
-                ticker1: { label: "US Fed Funds Rate", val: "4.25%", sub: "Federal Reserve Target", desc: "Determines North American commercial borrowing conditions." },
-                ticker2: { label: "US Healthcare CPI", val: "4.1%", sub: "Medical Care Services Index", desc: "Inflation metric across US private and public hospital systems." },
-                ticker3: { label: "MedTech VC Funding", val: "$1.8B", sub: "+15% Q2 Capital Inflow", desc: "US & Canadian venture capital deal volume in digital health." },
-                ticker4: { label: "US Scan Wait Times", val: "18.2 Days", sub: "Avg Elective Imaging Delay", desc: "Average delay across major US hospital networks." },
-                ticker5: { label: "Cloud Inference Index", val: "-9.1%", sub: "Compute Cost YoY", desc: "Hyperscaler compute costs across US cloud zones." },
-                clearances: [8, 11, 14, 17, 20, 24],
-                vcFunding: [110, 140, 130, 160, 200, 210],
-                modalities: [38, 26, 18, 12, 6],
-                totalClearances: "2287",
-                indexName: "Dow Jones Industrial Average",
-                indexData: dow_6m_data: [48200, 49100, 50300, 51400, 52800, 51778],
-                ratesData: [5.50, 5.25, 5.00, 4.75, 4.50, 4.25],
-                highlights: {
-                    title: "North American Operational Highlights",
-                    hl1Title: "CPT Coding Growth:",
-                    hl1Text: "Category I CPT reimbursement codes now active for quantitative CT and MRI CADe algorithms.",
-                    hl2Title: "PACS Integration:",
-                    hl2Text: "Over 70% of US radiology groups now access AI tools through unified PACS marketplace hubs.",
-                    hl3Title: "FDA Predicate Rules:",
-                    hl3Text: "Updated PCCP guidelines allowing faster post-market algorithm updates without new 510(k) filings."
-                }
-            },
-            asia: {
-                ticker1: { label: "Regional Policy Rate", val: "2.10%", sub: "APAC Weighted Avg", desc: "Baseline borrowing costs across key East Asian markets." },
-                ticker2: { label: "Healthcare Inflation", val: "2.9%", sub: "APAC Services CPI", desc: "Measures medical operational costs in the APAC region." },
-                ticker3: { label: "MedTech VC Funding", val: "$620M", sub: "+10% Q2 Inflow", desc: "Venture investment in China, Japan, and Asia-Pacific startups." },
-                ticker4: { label: "Regional Backlog", val: "1.1M", sub: "Est. Diagnostic Delays", desc: "Estimated waiting lists across Tier-1/2 regional hospitals." },
-                ticker5: { label: "Cloud Inference Index", val: "-7.8%", sub: "Compute Cost YoY", desc: "Cloud processing unit costs in regional server hubs." },
-                clearances: [3, 4, 5, 6, 7, 8],
-                vcFunding: [30, 45, 35, 45, 55, 65],
-                modalities: [30, 25, 25, 15, 5],
-                totalClearances: "2287",
-                indexName: "Nikkei 225 / APAC Benchmark",
-                indexData: [38000, 38500, 39100, 39800, 40200, 39900],
-                ratesData: [1.80, 1.85, 1.90, 2.00, 2.05, 2.10],
-                highlights: {
-                    title: "Asia-Pacific Operational Highlights",
-                    hl1Title: "Tier-2 Hospital Adoption:",
-                    hl1Text: "Rapid deployment of screening AI in regional hospitals compensating for specialist centralization.",
-                    hl2Title: "Local Regulation:",
-                    hl2Text: "NMPA (China) and PMDA (Japan) accelerating fast-track approvals for domestic oncology AI models.",
-                    hl3Title: "Cloud On-Premise Shift:",
-                    hl3Text: "Strict local data residency laws favoring hybrid on-premise edge appliance deployments."
-                }
-            },
-            middleEast: {
-                ticker1: { label: "Interbank Benchmark", val: "4.75%", sub: "GCC Average", desc: "Cost of borrowing across GCC financial markets." },
-                ticker2: { label: "Healthcare Inflation", val: "3.5%", sub: "Regional CPI", desc: "Operational cost trends in private healthcare." },
-                ticker3: { label: "MedTech VC Funding", val: "$180M", sub: "+18% Q2 Inflow", desc: "Capital flow into Middle Eastern digital health initiatives." },
-                ticker4: { label: "Diagnostic Volume", val: "120K", sub: "Monthly High-Tech Scans", desc: "Monthly imaging volume in major regional hubs." },
-                ticker5: { label: "Cloud Inference Index", val: "-8.0%", sub: "Compute Cost YoY", desc: "Regional cloud processing and data residency overheads." },
-                clearances: [1, 1, 1, 1, 1, 1],
-                vcFunding: [7, 10, 10, 12, 15, 15],
-                modalities: [40, 20, 20, 10, 10],
-                totalClearances: "2287",
-                indexName: "DFM General Index",
-                indexData: [4100, 4180, 4220, 4290, 4350, 4310],
-                ratesData: [5.50, 5.25, 5.25, 5.00, 4.85, 4.75],
-                highlights: {
-                    title: "Middle East Operational Highlights",
-                    hl1Title: "State Infrastructure Spending:",
-                    hl1Text: "GCC national health transformation funds driving centralized AI deployment in mega-hospitals.",
-                    hl2Title: "Vendor Expansion:",
-                    hl2Text: "Major US/EU AI developers establishing regional data centers to satisfy local privacy mandates.",
-                    hl3Title: "Screening Campaigns:",
-                    hl3Text: "Government-backed mobile mammography and chest CT screening drives heavily utilizing AI triage."
-                }
-            },
-            southAmerica: {
-                ticker1: { label: "Central Bank Avg", val: "9.50%", sub: "LATAM Benchmark", desc: "Average interest rates affecting LATAM hospital CapEx." },
-                ticker2: { label: "Healthcare Inflation", val: "6.2%", sub: "LATAM Medical CPI", desc: "High local inflation driving need for operational efficiency." },
-                ticker3: { label: "MedTech VC Funding", val: "$95M", sub: "+5% Q2 Inflow", desc: "Venture capital investment across Latin American health tech." },
-                ticker4: { label: "Public Wait List", val: "310K", sub: "Awaiting Diagnostic Scans", desc: "Outstanding imaging requirements in public systems." },
-                ticker5: { label: "Cloud Inference Index", val: "-6.5%", sub: "Compute Cost YoY", desc: "Cloud compute cost dynamics in LATAM server locations." },
-                clearances: [1, 1, 1, 1, 1, 1],
-                vcFunding: [3, 5, 5, 8, 10, 10],
-                modalities: [35, 25, 25, 10, 5],
-                totalClearances: "2287",
-                indexName: "iBovespa Index",
-                indexData: [124000, 126000, 128500, 131000, 134000, 132500],
-                ratesData: [10.50, 10.25, 10.00, 9.75, 9.50, 9.50],
-                highlights: {
-                    title: "South America Operational Highlights",
-                    hl1Title: "Private Sector Focus:",
-                    hl1Text: "Adoption concentrated in tier-1 private healthcare networks due to public CapEx constraints.",
-                    hl2Title: "ANVISA Clearances:",
-                    hl2Text: "Brazilian regulatory agency harmonizing SAMD pathways to accelerate international software entry.",
-                    hl3Title: "Teleradiology Demand:",
-                    hl3Text: "High reliance on AI triage tools within remote teleradiology networks spanning rural regions."
-                }
-            }
-        };
+    # 5. Inject 6-month historical stock index datasets into JS object
+    content = re.sub(
+        r'(northAmerica:\s*\{[^}]*indexData:\s*)\[[^\]]+\]',
+        rf'\1{json.dumps(metrics["dow_6m"])}',
+        content
+    )
+    content = re.sub(
+        r'(europe:\s*\{[^}]*indexData:\s*)\[[^\]]+\]',
+        rf'\1{json.dumps(metrics["ftse_6m"])}',
+        content
+    )
 
-        // Line Chart Initialization (Approvals vs VC Funding)
-        const ctxApprovals = document.getElementById('approvalsChart').getContext('2d');
-        const approvalsChart = new Chart(ctxApprovals, {
-            type: 'line',
-            data: {
-                labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1 (Prev)', 'Q2 (Current)'],
-                datasets: [
-                    {
-                        label: 'AI Regulatory Clearances',
-                        data: regionData.global.clearances,
-                        borderColor: '#3182ce',
-                        backgroundColor: 'rgba(49, 130, 206, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    },
-                    {
-                        label: 'VC Funding (£ Millions)',
-                        data: regionData.global.vcFunding,
-                        borderColor: '#38a169',
-                        tension: 0.3,
-                        fill: false,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'top' } },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: { display: true, text: 'Clearances' }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: { display: true, text: 'Funding (£M)' },
-                        grid: { drawOnChartArea: false }
-                    }
-                }
-            }
-        });
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(content)
 
-        // Doughnut Chart Initialization (Modalities)
-        const ctxModality = document.getElementById('modalityChart').getContext('2d');
-        const modalityChart = new Chart(ctxModality, {
-            type: 'doughnut',
-            data: {
-                labels: ['CT Scans', 'MRI', 'X-Ray / Mammography', 'Ultrasound', 'Pathology'],
-                datasets: [{
-                    data: regionData.global.modalities,
-                    backgroundColor: ['#2b6cb0', '#319795', '#38a169', '#d69e2e', '#e53e3e']
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
+    print("✅ Dashboard updated successfully.")
 
-        // Dual-Axis Line Chart Initialization (Index vs Interest Rate)
-        const ctxMacro = document.getElementById('macroChart').getContext('2d');
-        const macroChart = new Chart(ctxMacro, {
-            type: 'line',
-            data: {
-                labels: monthLabels,
-                datasets: [
-                    {
-                        label: 'Stock Market Index',
-                        data: regionData.global.indexData,
-                        borderColor: '#2b6cb0',
-                        backgroundColor: 'rgba(43, 108, 176, 0.1)',
-                        tension: 0.3,
-                        fill: true,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Central Bank Policy Rate (%)',
-                        data: regionData.global.ratesData,
-                        borderColor: '#e53e3e',
-                        borderDash: [5, 5],
-                        tension: 0.2,
-                        fill: false,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'top' } },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: { display: true, text: 'Index Points' }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: { display: true, text: 'Interest Rate (%)' },
-                        grid: { drawOnChartArea: false }
-                    }
-                }
-            }
-        });
-
-        function updateView(regionKey) {
-            const selectedRegion = regionData[regionKey] || regionData.global;
-
-            document.getElementById('ticker1-label').innerText = selectedRegion.ticker1.label;
-            document.getElementById('ticker1-val').innerText = selectedRegion.ticker1.val;
-            document.getElementById('ticker1-sub').innerText = selectedRegion.ticker1.sub;
-            document.getElementById('ticker1-desc').innerText = selectedRegion.ticker1.desc;
-
-            document.getElementById('ticker2-label').innerText = selectedRegion.ticker2.label;
-            document.getElementById('ticker2-val').innerText = selectedRegion.ticker2.val;
-            document.getElementById('ticker2-sub').innerText = selectedRegion.ticker2.sub;
-            document.getElementById('ticker2-desc').innerText = selectedRegion.ticker2.desc;
-
-            document.getElementById('ticker3-label').innerText = selectedRegion.ticker3.label;
-            document.getElementById('ticker3-val').innerText = selectedRegion.ticker3.val;
-            document.getElementById('ticker3-sub').innerText = selectedRegion.ticker3.sub;
-            document.getElementById('ticker3-desc').innerText = selectedRegion.ticker3.desc;
-
-            document.getElementById('ticker4-label').innerText = selectedRegion.ticker4.label;
-            document.getElementById('ticker4-val').innerText = selectedRegion.ticker4.val;
-            document.getElementById('ticker4-sub').innerText = selectedRegion.ticker4.sub;
-            document.getElementById('ticker4-desc').innerText = selectedRegion.ticker4.desc;
-
-            document.getElementById('ticker5-label').innerText = selectedRegion.ticker5.label;
-            document.getElementById('ticker5-val').innerText = selectedRegion.ticker5.val;
-            document.getElementById('ticker5-sub').innerText = selectedRegion.ticker5.sub;
-            document.getElementById('ticker5-desc').innerText = selectedRegion.ticker5.desc;
-
-            approvalsChart.data.datasets[0].data = selectedRegion.clearances;
-            approvalsChart.data.datasets[1].data = selectedRegion.vcFunding;
-            approvalsChart.update();
-
-            modalityChart.data.datasets[0].data = selectedRegion.modalities;
-            modalityChart.update();
-
-            document.getElementById('macroChartTitle').innerText = `${selectedRegion.indexName} & Interest Rates (6-Month View)`;
-            macroChart.data.datasets[0].label = selectedRegion.indexName;
-            macroChart.data.datasets[0].data = selectedRegion.indexData;
-            macroChart.data.datasets[1].data = selectedRegion.ratesData;
-            macroChart.update();
-
-            document.getElementById('clearances-metric').innerText = selectedRegion.totalClearances;
-
-            if (selectedRegion.highlights) {
-                document.getElementById('highlights-title').innerText = selectedRegion.highlights.title;
-                document.getElementById('hl1-title').innerText = selectedRegion.highlights.hl1Title;
-                document.getElementById('hl1-text').innerText = selectedRegion.highlights.hl1Text;
-                document.getElementById('hl2-title').innerText = selectedRegion.highlights.hl2Title;
-                document.getElementById('hl2-text').innerText = selectedRegion.highlights.hl2Text;
-                document.getElementById('hl3-title').innerText = selectedRegion.highlights.hl3Title;
-                document.getElementById('hl3-text').innerText = selectedRegion.highlights.hl3Text;
-            }
-        }
-
-        document.getElementById('regionSelect').addEventListener('change', (e) => {
-            const region = e.target.value;
-            const url = new URL(window.location);
-            url.searchParams.set('region', region);
-            window.history.pushState({}, '', url);
-            updateView(region);
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const initialRegion = urlParams.get('region') || 'global';
-            document.getElementById('regionSelect').value = initialRegion;
-            updateView(initialRegion);
-        });
-    </script>
-</body>
-</html>
+if __name__ == "__main__":
+    update_dashboard()

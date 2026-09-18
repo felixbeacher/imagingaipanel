@@ -109,13 +109,13 @@ def update_dashboard():
 
     # 5. Inject 6-month historical stock index datasets into JS object
     content = re.sub(
-        r'dow_6m_data:\s*\[[^\]]+\]',
-        f'dow_6m_data: {json.dumps(metrics["dow_6m"])}',
+        r'(northAmerica:\s*\{[^}]*indexData:\s*)\[[^\]]+\]',
+        rf'\1{json.dumps(metrics["dow_6m"])}',
         content
     )
     content = re.sub(
-        r'ftse_6m_data:\s*\[[^\]]+\]',
-        f'ftse_6m_data: {json.dumps(metrics["ftse_6m"])}',
+        r'(europe:\s*\{[^}]*indexData:\s*)\[[^\]]+\]',
+        rf'\1{json.dumps(metrics["ftse_6m"])}',
         content
     )
 
