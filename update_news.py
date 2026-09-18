@@ -21,7 +21,9 @@ def fetch_live_metrics():
     """Fetch live market proxies via yfinance and central bank benchmarks."""
     metrics = {
         "xlv_price": "$142.5",
-        "uk_rate": "3.75%"
+        "uk_rate": "3.75%",
+        "dow_6m": [48200, 49100, 50300, 51400, 52800, 51778],
+        "ftse_6m": [10200, 10350, 10400, 10600, 10850, 10774]
     }
     
     # Fetch XLV MedTech ETF Price
@@ -31,6 +33,18 @@ def fetch_live_metrics():
         metrics["xlv_price"] = f"${xlv_price:.1f}"
     except Exception as e:
         print(f"Warning: Failed XLV fetch ({e}). Using fallback.")
+
+    # Fetch 6-Month Trailing Monthly History for Stock Indices
+    try:
+        dow_hist = yf.Ticker("^DJI").history(period="6m", interval="1mo")['Close'].dropna().tolist()
+        if len(dow_hist) >= 6:
+            metrics["dow_6m"] = [int(val) for val in dow_hist[-6:]]
+            
+        ftse_hist = yf.Ticker("^FTSE").history(period="6m", interval="1mo")['Close'].dropna().tolist()
+        if len(ftse_hist) >= 6:
+            metrics["ftse_6m"] = [int(val) for val in ftse_hist[-6:]]
+    except Exception as e:
+        print(f"Warning: Failed Index history fetch ({e}). Using fallback.")
 
     return metrics
 
@@ -61,7 +75,7 @@ def update_dashboard():
     with open("index.html", "r", encoding="utf-8") as f:
         content = f.read()
 
-    # 1. Safely inject news HTML strictly inside the news container
+    # 1. Inject news HTML strictly inside the news container
     if "<!-- NEWS_ITEMS_PLACEHOLDER -->" in content:
         content = content.replace("<!-- NEWS_ITEMS_PLACEHOLDER -->", news_html)
     else:
@@ -90,6 +104,18 @@ def update_dashboard():
     content = re.sub(
         r'uk_rate_val:\s*"[^"]+"',
         f'uk_rate_val: "{metrics["uk_rate"]}"',
+        content
+    )
+
+    # 5. Inject 6-month historical stock index datasets into JS object
+    content = re.sub(
+        r'dow_6m_data:\s*\[[^\]]+\]',
+        f'dow_6m_data: {json.dumps(metrics["dow_6m"])}',
+        content
+    )
+    content = re.sub(
+        r'ftse_6m_data:\s*\[[^\]]+\]',
+        f'ftse_6m_data: {json.dumps(metrics["ftse_6m"])}',
         content
     )
 

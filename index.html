@@ -129,7 +129,6 @@
             line-height: 1.35;
         }
 
-        /* News Container Scroll & Overflow Fix */
         #news-feed-container {
             max-height: 420px;
             overflow-y: auto;
@@ -332,8 +331,17 @@
             </p>
         </div>
 
-        <!-- Dynamic Regional Operational Highlights -->
+        <!-- Graph Unit 3: Stock Index vs Interest Rate Graph (6-Month View) -->
         <div class="card col-6">
+            <h2 id="macroChartTitle">Stock Market Index & Interest Rates (6-Month View)</h2>
+            <canvas id="macroChart"></canvas>
+            <p class="metric-desc" style="margin-top: 15px;">
+                Illustrates the 6-month trailing correlation between broad market equity valuations and regional central bank interest rates shaping enterprise health spending.
+            </p>
+        </div>
+
+        <!-- Dynamic Regional Operational Highlights -->
+        <div class="card col-12">
             <h2 id="highlights-title">Regional Operational Highlights</h2>
             <div class="news-item">
                 <strong id="hl1-title">Demographic Demand:</strong> 
@@ -356,6 +364,8 @@
     </footer>
 
     <script>
+        const monthLabels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+
         const regionData = {
             global: {
                 ticker1: { label: "Central Bank Policy", val: "3.85%", sub: "G7 Weighted Avg", desc: "Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems." },
@@ -367,6 +377,9 @@
                 vcFunding: [210, 280, 250, 310, 390, 420],
                 modalities: [35, 28, 20, 12, 5],
                 totalClearances: "142",
+                indexName: "MSCI World Index",
+                indexData: [3150, 3210, 3280, 3340, 3390, 3420],
+                ratesData: [5.25, 5.00, 4.50, 4.25, 4.00, 3.85],
                 highlights: {
                     title: "Global Operational Highlights",
                     hl1Title: "Demographic Demand:",
@@ -378,7 +391,7 @@
                 }
             },
             europe: {
-                ticker1: { label: "UK Base Rate", val: "3.75%", sub: "Bank of England Benchmark", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
+                ticker1: { label: "UK Base Rate", uk_rate_val: "3.75%", val: "3.75%", sub: "Bank of England Benchmark", desc: "Sets baseline UK borrowing cost, influencing provider capital budgets." },
                 ticker2: { label: "Healthcare Inflation", val: "3.2%", sub: "UK YoY Services CPI", desc: "Measures operational costs in UK/EU healthcare systems." },
                 ticker3: { label: "MedTech VC Funding", val: "£520M", sub: "+8% Q2 Capital Inflow", desc: "Venture capital deployed into European medical technology startups." },
                 ticker4: { label: "NHS Imaging Backlog", val: "612K", sub: "Patients Awaiting Scans", desc: "Highlights outstanding scan volumes across UK NHS trusts." },
@@ -387,6 +400,9 @@
                 vcFunding: [60, 80, 70, 85, 110, 120],
                 modalities: [32, 30, 22, 11, 5],
                 totalClearances: "43",
+                indexName: "FTSE 100",
+                indexData: ftse_6m_data: [10200, 10350, 10400, 10600, 10850, 10774],
+                ratesData: [5.25, 5.00, 4.75, 4.25, 4.00, 3.75],
                 highlights: {
                     title: "European Operational Highlights",
                     hl1Title: "NHS Tariff Expansion:",
@@ -407,6 +423,9 @@
                 vcFunding: [110, 140, 130, 160, 200, 210],
                 modalities: [38, 26, 18, 12, 6],
                 totalClearances: "68",
+                indexName: "Dow Jones Industrial Average",
+                indexData: dow_6m_data: [48200, 49100, 50300, 51400, 52800, 51778],
+                ratesData: [5.50, 5.25, 5.00, 4.75, 4.50, 4.25],
                 highlights: {
                     title: "North American Operational Highlights",
                     hl1Title: "CPT Coding Growth:",
@@ -427,6 +446,9 @@
                 vcFunding: [30, 45, 35, 45, 55, 65],
                 modalities: [30, 25, 25, 15, 5],
                 totalClearances: "21",
+                indexName: "Nikkei 225 / APAC Benchmark",
+                indexData: [38000, 38500, 39100, 39800, 40200, 39900],
+                ratesData: [1.80, 1.85, 1.90, 2.00, 2.05, 2.10],
                 highlights: {
                     title: "Asia-Pacific Operational Highlights",
                     hl1Title: "Tier-2 Hospital Adoption:",
@@ -447,6 +469,9 @@
                 vcFunding: [7, 10, 10, 12, 15, 15],
                 modalities: [40, 20, 20, 10, 10],
                 totalClearances: "6",
+                indexName: "DFM General Index",
+                indexData: [4100, 4180, 4220, 4290, 4350, 4310],
+                ratesData: [5.50, 5.25, 5.25, 5.00, 4.85, 4.75],
                 highlights: {
                     title: "Middle East Operational Highlights",
                     hl1Title: "State Infrastructure Spending:",
@@ -467,6 +492,9 @@
                 vcFunding: [3, 5, 5, 8, 10, 10],
                 modalities: [35, 25, 25, 10, 5],
                 totalClearances: "4",
+                indexName: "iBovespa Index",
+                indexData: [124000, 126000, 128500, 131000, 134000, 132500],
+                ratesData: [10.50, 10.25, 10.00, 9.75, 9.50, 9.50],
                 highlights: {
                     title: "South America Operational Highlights",
                     hl1Title: "Private Sector Focus:",
@@ -479,7 +507,7 @@
             }
         };
 
-        // Line Chart Initialization
+        // Line Chart Initialization (Approvals vs VC Funding)
         const ctxApprovals = document.getElementById('approvalsChart').getContext('2d');
         const approvalsChart = new Chart(ctxApprovals, {
             type: 'line',
@@ -525,7 +553,7 @@
             }
         });
 
-        // Doughnut Chart Initialization
+        // Doughnut Chart Initialization (Modalities)
         const ctxModality = document.getElementById('modalityChart').getContext('2d');
         const modalityChart = new Chart(ctxModality, {
             type: 'doughnut',
@@ -539,6 +567,54 @@
             options: {
                 responsive: true,
                 plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // Dual-Axis Line Chart Initialization (Index vs Interest Rate)
+        const ctxMacro = document.getElementById('macroChart').getContext('2d');
+        const macroChart = new Chart(ctxMacro, {
+            type: 'line',
+            data: {
+                labels: monthLabels,
+                datasets: [
+                    {
+                        label: 'Stock Market Index',
+                        data: regionData.global.indexData,
+                        borderColor: '#2b6cb0',
+                        backgroundColor: 'rgba(43, 108, 176, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Central Bank Policy Rate (%)',
+                        data: regionData.global.ratesData,
+                        borderColor: '#e53e3e',
+                        borderDash: [5, 5],
+                        tension: 0.2,
+                        fill: false,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'top' } },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Index Points' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Interest Rate (%)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
             }
         });
 
@@ -576,6 +652,12 @@
 
             modalityChart.data.datasets[0].data = selectedRegion.modalities;
             modalityChart.update();
+
+            document.getElementById('macroChartTitle').innerText = `${selectedRegion.indexName} & Interest Rates (6-Month View)`;
+            macroChart.data.datasets[0].label = selectedRegion.indexName;
+            macroChart.data.datasets[0].data = selectedRegion.indexData;
+            macroChart.data.datasets[1].data = selectedRegion.ratesData;
+            macroChart.update();
 
             document.getElementById('clearances-metric').innerText = selectedRegion.totalClearances;
 
