@@ -111,7 +111,7 @@ def fetch_openfda_clearances():
 
 
 def generate_gemini_outlook(news_items, fda_count):
-    """Uses Gemini to synthesize scraped news and metrics into a sector outlook and policy rate."""
+    """Uses Gemini to synthesize scraped news and metrics into a sector outlook and macro indicators."""
     client = genai.Client()
 
     headlines_text = "\n".join(
@@ -123,12 +123,14 @@ def generate_gemini_outlook(news_items, fda_count):
     and recent FDA clearance count ({fda_count} total LLZ clearances):
     1. Write a short, professional Sector Outlook Summary (around 3-4 sentences).
     2. Assign a sentiment badge (e.g., Bullish, Moderately Bullish, Cautious).
-    3. Provide the current estimated G7 weighted average central bank policy rate as a percentage string (e.g., "3.85%").
+    3. Provide the current estimated G7 weighted average central bank policy rate (e.g., "3.85%").
+    4. Provide the current estimated global healthcare services inflation rate (e.g., "3.8%").
+    5. Provide the current estimated Health Care Select Sector SPDR Fund (XLV) index value or price (e.g., "$142.5").
     
     Recent Headlines:
     {headlines_text}
     
-    Return your response strictly as valid JSON with keys: "badge", "summary", and "policy_rate".
+    Return your response strictly as valid JSON with keys: "badge", "summary", "policy_rate", "healthcare_inflation", and "medtech_index".
     """
 
     try:
@@ -145,8 +147,10 @@ def generate_gemini_outlook(news_items, fda_count):
         return {
             "badge": "Unavailable",
             "summary": "Live analysis currently unavailable.",
-            "policy_rate": "Currently unavailable"
-        }    
+            "policy_rate": "Unavailable",
+            "healthcare_inflation": "Unavailable",
+            "medtech_index": "Unavailable"
+        }
 
 
 def render_news_html(news_items):
@@ -174,7 +178,9 @@ def render_news_html(news_items):
 class DashboardRequestHandler(BaseHTTPRequestHandler):
     """HTTP Request Handler delivering the integrated dashboard and API endpoints."""
 
-    def do_GET(self):
+def do_GET(self):
+        """HTTP Request Handler delivering the integrated dashboard and API endpoints."""
+
         parsed_path = urllib.parse.urlparse(self.path)
 
         if parsed_path.path == "/api/fda-clearances":
@@ -215,6 +221,14 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 html_content = html_content.replace(
                     "<!-- POLICY_RATE_PLACEHOLDER -->",
                     ai_analysis["policy_rate"],
+                )
+                html_content = html_content.replace(
+                    "<!-- HEALTHCARE_INFLATION_PLACEHOLDER -->",
+                    ai_analysis["healthcare_inflation"],
+                )
+                html_content = html_content.replace(
+                    "<!-- MEDTECH_INDEX_PLACEHOLDER -->",
+                    ai_analysis["medtech_index"],
                 )
 
                 self.send_response(200)
