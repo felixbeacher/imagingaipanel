@@ -104,10 +104,10 @@ def fetch_openfda_clearances():
         )
         with urllib.request.urlopen(req, timeout=5) as response:
             data = json.loads(response.read().decode("utf-8"))
-            return data.get("meta", {}).get("results", {}).get("total", 142)
+            return data.get("meta", {}).get("results", {}).get("total", "Currently unavailable")
     except Exception as e:
         logging.warning(f"Failed to fetch openFDA data: {e}")
-        return 142
+        return "Currently unavailable"
 
 
 def generate_gemini_outlook(news_items, fda_count):
@@ -144,8 +144,8 @@ def generate_gemini_outlook(news_items, fda_count):
         logging.warning(f"Failed to generate Gemini outlook: {e}")
         return {
             "badge": "Unavailable",
-            "summary": "Live analysis currently unavailable due to a connection or parsing error.",
-            "policy_rate": "Currently Unavailable"
+            "summary": "Live analysis currently unavailable.",
+            "policy_rate": "Currently unavailable"
         }    
 
 
