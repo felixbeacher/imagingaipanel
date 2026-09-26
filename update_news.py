@@ -1,10 +1,13 @@
 import json
 import logging
+import os
 import re
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from google import genai
+from google.genai import types
 
 # Configure logging
 logging.basicConfig(
@@ -32,10 +35,9 @@ def fetch_rss_headlines():
             with urllib.request.urlopen(req, timeout=5) as response:
                 xml_data = response.read().decode("utf-8", errors="ignore")
 
-            # Extract items via regex to avoid heavy external dependencies
             raw_items = re.findall(r"<item>(.*?)</item>", xml_data, re.DOTALL)
 
-            for raw_item in raw_items[:3]:  # Limit to top 3 per feed
+            for raw_item in raw_items[:3]:
                 title_match = re.search(
                     r"<title>(.*?)</title>", raw_item, re.DOTALL
                 )
@@ -63,7 +65,6 @@ def fetch_rss_headlines():
                         date_match.group(1).strip() if date_match else "Recent"
                     )
 
-                    # Simple tag classification based on keywords
                     tag = "Industry"
                     title_lower = title.lower()
                     if "fda" in title_lower or "clearance" in title_lower:
@@ -106,7 +107,46 @@ def fetch_openfda_clearances():
             return data.get("meta", {}).get("results", {}).get("total", 142)
     except Exception as e:
         logging.warning(f"Failed to fetch openFDA data: {e}")
-        return 142  # Fallback baseline count
+        return 142
+
+
+def generate_gemini_outlook(news_items, fda_count):
+    """Uses Gemini to synthesize scraped news and metrics into a sector outlook and policy rate."""
+    client = genai.Client()
+
+    headlines_text = "\n".join(
+        [f"- {item['title']} ({item['source']})" for item in news_items]
+    )
+
+    prompt = f"""
+    You are a medical technology market analyst. Based on the following live RSS headlines 
+    and recent FDA clearance count ({fda_count} total LLZ clearances):
+    1. Write a short, professional Sector Outlook Summary (around 3-4 sentences).
+    2. Assign a sentiment badge (e.g., Bullish, Moderately Bullish, Cautious).
+    3. Provide the current estimated G7 weighted average central bank policy rate as a percentage string (e.g., "3.85%").
+    
+    Recent Headlines:
+    {headlines_text}
+    
+    Return your response strictly as valid JSON with keys: "badge", "summary", and "policy_rate".
+    """
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            ),
+        )
+        return json.loads(response.text)
+    except Exception as e:
+        logging.warning(f"Failed to generate Gemini outlook: {e}")
+        return {
+            "badge": "Moderately Bullish",
+            "summary": "The medical imaging AI sector continues steady integration amidst active regulatory approvals and growing clinical demand.",
+            "policy_rate": "3.85%"
+        }
 
 
 def render_news_html(news_items):
@@ -138,7 +178,6 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urllib.parse.urlparse(self.path)
 
-        # API Endpoint for dynamic FDA count
         if parsed_path.path == "/api/fda-clearances":
             count = fetch_openfda_clearances()
             self.send_response(200)
@@ -151,19 +190,32 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             )
             return
 
-        # Main Route: Load HTML and inject live backend data
-        if parsed_path.path in ["/", "/index.html"]:
+        if parsed_path.path in ["/", "/ai.html"]:
             try:
-                with open("index.html", "r", encoding="utf-8") as file:
+                with open("ai.html", "r", encoding="utf-8") as file:
                     html_content = file.read()
 
-                # Fetch fresh RSS feed items
+                # Fetch fresh data and generate Gemini analysis
                 news_items = fetch_rss_headlines()
                 news_html = render_news_html(news_items)
+                fda_count = fetch_openfda_clearances()
+                ai_analysis = generate_gemini_outlook(news_items, fda_count)
 
-                # Inject RSS news items into HTML template placeholder
+                # Inject RSS news items and LLM content into HTML placeholders
                 html_content = html_content.replace(
                     "<!-- NEWS_ITEMS_PLACEHOLDER -->", news_html
+                )
+                html_content = html_content.replace(
+                    "<!-- OUTLOOK_BADGE_PLACEHOLDER -->",
+                    ai_analysis["badge"],
+                )
+                html_content = html_content.replace(
+                    "<!-- OUTLOOK_SUMMARY_PLACEHOLDER -->",
+                    ai_analysis["summary"],
+                )
+                html_content = html_content.replace(
+                    "<!-- POLICY_RATE_PLACEHOLDER -->",
+                    ai_analysis["policy_rate"],
                 )
 
                 self.send_response(200)
@@ -176,7 +228,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "text/plain")
                 self.end_headers()
                 self.wfile.write(
-                    b"Error: index.html file not found in the working directory."
+                    b"Error: ai.html file not found in the working directory."
                 )
             except Exception as e:
                 self.send_response(500)
