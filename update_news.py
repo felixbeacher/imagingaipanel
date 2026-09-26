@@ -143,10 +143,10 @@ def generate_gemini_outlook(news_items, fda_count):
     except Exception as e:
         logging.warning(f"Failed to generate Gemini outlook: {e}")
         return {
-            "badge": "Moderately Bullish",
-            "summary": "The medical imaging AI sector continues steady integration amidst active regulatory approvals and growing clinical demand.",
-            "policy_rate": "3.85%"
-        }
+            "badge": "Unavailable",
+            "summary": "Live analysis currently unavailable due to a connection or parsing error.",
+            "policy_rate": "Currently Unavailable"
+        }    
 
 
 def render_news_html(news_items):
@@ -170,7 +170,6 @@ def render_news_html(news_items):
         </div>
         """
     return html_out
-
 
 class DashboardRequestHandler(BaseHTTPRequestHandler):
     """HTTP Request Handler delivering the integrated dashboard and API endpoints."""
