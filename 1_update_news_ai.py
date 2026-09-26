@@ -218,9 +218,9 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
             )
             return
 
-        if parsed_path.path in ["/", "/ai.html"]:
+        if parsed_path.path in ["/", "/1_ai.html"]:
             try:
-                with open("ai.html", "r", encoding="utf-8") as file:
+                with open("1_ai.html", "r", encoding="utf-8") as file:
                     html_content = file.read()
 
                 # Fetch fresh data and generate Gemini analysis
@@ -255,7 +255,7 @@ class DashboardRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "text/plain")
                 self.end_headers()
                 self.wfile.write(
-                    b"Error: ai.html file not found in the working directory."
+                    b"Error: 1_ai.html file not found in the working directory."
                 )
             except Exception as e:
                 self.send_response(500)
