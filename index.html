@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Imaging Dashboard</title>
     <link rel="stylesheet" href="styles.css">
-
 </head>
+
 <body>
 
     <header>
@@ -15,14 +15,14 @@
                 <h1>The Medical Imaging Dashboard</h1>
                 <p>Created and managed by Felix Beacher, PhD</p>
             </div>
-            <!-- Flashy Tab Links with Home First -->
+            <!-- Tab Links -->
             <nav class="nav-tabs">
                 <a href="index.html" class="tab-btn active">Home</a>
-                <a href="ai.html" class="tab-btn">AI</a>
-                <a href="mri.html" class="tab-btn">MRI</a>
-                <a href="ct.html" class="tab-btn">CT</a>
-                <a href="xray.html" class="tab-btn">Xray</a>
-                <a href="pet.html" class="tab-btn">PET</a>
+                <a href="1_ai.html" class="tab-btn">AI</a>
+                <a href="2_ct.html" class="tab-btn">CT</a>
+                <a href="3_mri.html" class="tab-btn">MRI</a>
+                <a href="4_pet.html" class="tab-btn">PET</a>
+                <a href="5_xray.html" class="tab-btn">Xray</a>
             </nav>
         </div>
     </header>
@@ -60,20 +60,5 @@
             </div>
     </main>
 
-    <script>
-        function switchTab(evt, tabId) {
-            // Hide all tab panes
-            const panes = document.querySelectorAll('.tab-pane');
-            panes.forEach(pane => pane.classList.remove('active'));
-
-            // Remove active state from all buttons
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            // Show target tab pane and activate button
-            document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
-        }
-    </script>
 </body>
 </html>

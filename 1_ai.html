@@ -1,3 +1,21 @@
+<!-- This HTML file does not need to make any reference to the Python backend file.... 
+because it remains passive: It does not need to know anything about the script that is updating its placeholders. 
+The Python script controls the workflow: 
+1. It reads the HTML files as plain text files.   
+2. It then searches the HTML files for placeholders and injects live data
+3. It then sends the updated HTML files to the browser.
+
+Placeholders are written as HTML comments, browsers ignore them. 
+But the Python script...
+1. reads the HTML files as plain text
+2. searches for the string POLICY_RATE_PLACEHOLDER
+replaces it with real data
+
+This webpage is actually  pretty basic - its main job is simply to receive data at the placeholders
+
+
+-->
+
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
@@ -12,6 +30,7 @@
     <link rel="stylesheet" href="styles.css">
 
 </head>
+
 <body>
 
     <header>
@@ -20,12 +39,12 @@
                 <h1>Medical Imaging AI</h1>
                 <p class="author-bio">Created and managed by Felix Beacher, PhD.</p>
             </div>
-            <!-- Modern Flashy Tab Navigation (Home First) -->
+            <!-- Tab Buttons -->
             <nav class="nav-tabs">
                 <a href="index.html" class="tab-btn">Home</a>
                 <a href="ai.html" class="tab-btn active">AI</a>
-                <a href="mri.html" class="tab-btn">MRI</a>
                 <a href="ct.html" class="tab-btn">CT</a>
+                <a href="mri.html" class="tab-btn">MRI</a>
                 <a href="pet.html" class="tab-btn">PET</a>
                 <a href="xray.html" class="tab-btn">Xray</a>
             </nav>
@@ -110,48 +129,46 @@
     </div>
 </div>
 
-                <!-- Integrated Regional Operational Highlights Footer -->
-                <div style="border-top: 1px solid var(--border-color); margin-top: 20px; padding-top: 15px;">
-                    <h3 id="highlights-title" style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; color: var(--text-main);">Regional Operational Highlights</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-                        <div class="factor-card">
-                            <div class="factor-card-title" id="hl1-title">Demographic Demand:</div>
-                            <div class="factor-card-text" id="hl1-text">Global population aged 65+ increased by 2.1% YoY, driving higher chronic imaging volumes worldwide.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title" id="hl2-title">Procurement Timeline:</div>
-                            <div class="factor-card-text" id="hl2-text">Average enterprise contract closing cycle is currently 9.4 months across major health networks.</div>
-                        </div>
-                        <div class="factor-card">
-                            <div class="factor-card-title" id="hl3-title">Compute Overhead:</div>
-                            <div class="factor-card-text" id="hl3-text">Cloud processing expenditure per 1,000 inference scans has decreased by 8.5% YoY.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+<!-- Integrated Regional Operational Highlights Footer -->
+<div style="border-top: 1px solid var(--border-color); margin-top: 20px; padding-top: 15px;">
+    <h3 id="highlights-title" style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; color: var(--text-main);">Regional Operational Highlights</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+        <div class="factor-card">
+            <div class="factor-card-title" id="hl1-title"><!-- HL1_TITLE_PLACEHOLDER --></div>
+            <div class="factor-card-text" id="hl1-text"><!-- HL1_TEXT_PLACEHOLDER --></div>
+        </div>
+        <div class="factor-card">
+            <div class="factor-card-title" id="hl2-title"><!-- HL2_TITLE_PLACEHOLDER --></div>
+            <div class="factor-card-text" id="hl2-text"><!-- HL2_TEXT_PLACEHOLDER --></div>
+        </div>
+        <div class="factor-card">
+            <div class="factor-card-title" id="hl3-title"><!-- HL3_TITLE_PLACEHOLDER --></div>
+            <div class="factor-card-text" id="hl3-text"><!-- HL3_TEXT_PLACEHOLDER --></div>
+        </div>
+    </div>
+</div>
             <!-- Key Sector Metrics -->
             <div class="card col-3">
                 <div class="metric-label">FDA Clearances (LLZ Category)</div>
-                <div class="metric" id="clearances-metric">142</div>
+				<div class="metric" id="clearances-metric"><!-- CLEARANCES_METRIC_PLACEHOLDER --></div>
                 <div class="metric-sub">Radiology Image Processing</div>
                 <p class="metric-desc">Tracks FDA 510(k) clearances under product code LLZ via openFDA live API.</p>
             </div>
             <div class="card col-3">
                 <div class="metric-label">Radiologist Vacancy Rate</div>
-                <div class="metric">12.4%</div>
+                <div class="metric"><!-- VACANCY_RATE_PLACEHOLDER --></div>
                 <div class="metric-sub">High Workforce Deficit</div>
                 <p class="metric-desc">Measures unfilled clinical posts, underscoring the structural need for automated productivity solutions.</p>
             </div>
             <div class="card col-3">
                 <div class="metric-label">Reimbursement Adoption</div>
-                <div class="metric">34.2%</div>
+                <div class="metric"><!-- REIMBURSEMENT_ADOPTION_PLACEHOLDER --></div>
                 <div class="metric-sub">Hospitals with Active Billing</div>
                 <p class="metric-desc">Calculated via online public tariff registers and CMS claims datasets.</p>
             </div>
             <div class="card col-3">
                 <div class="metric-label">Prospective Clinical Validation</div>
-                <div class="metric">86</div>
+                <div class="metric"><!-- CLINICAL_VALIDATION_PLACEHOLDER --></div>
                 <div class="metric-sub">Peer-Reviewed Papers YTD</div>
                 <p class="metric-desc">Quantifies real-world clinical evidence publications needed to convince hospital procurement committees.</p>
             </div>
@@ -170,14 +187,16 @@
                 </div>
             </div>
 
-            <!-- Graph Unit 2: Modality Breakdown -->
+<!-- Graph Unit 2: Modality Breakdown -->
             <div class="card col-6">
                 <h2>AI Clearances by Imaging Modality</h2>
                 <canvas id="modalityChart"></canvas>
                 <p class="metric-desc" style="margin-top: 15px;">
-                    CT and MRI account for over 60% of overall regulatory clearances due to high scan complexity, heavy clinical workloads, and strong reimbursement coverage. Emerging modalities like Digital Pathology and Point-of-Care Ultrasound show accelerated relative growth as algorithms move beyond traditional cross-sectional imaging.
+                    <!-- MODALITY_DESCRIPTION_PLACEHOLDER -->
                 </p>
             </div>
+
+
 
             <!-- Graph Unit 3: Stock Index vs Interest Rate Graph (6-Month View) -->
             <div class="card col-6">
@@ -191,32 +210,32 @@
             <!-- Graph Unit 4: Vendor Revenue Breakdown (Pie Charts) -->
             <div class="card col-12">
                 <h2>Top 5 Vendor AI Revenue Breakdown (Public Online Estimates)</h2>
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-around; margin-top: 15px;">
-                    <div style="flex: 1; min-width: 260px; max-width: 320px; text-align: center;">
-                        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Total Overall Revenue</h3>
-                        <canvas id="totalVendorChart"></canvas>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-                        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Cardiology ($242M)</h3>
-                        <canvas id="cardioVendorChart"></canvas>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-                        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Pulmonology ($198M)</h3>
-                        <canvas id="pulmoVendorChart"></canvas>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-                        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Neurology ($132M)</h3>
-                        <canvas id="neuroVendorChart"></canvas>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-                        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Breast ($103M)</h3>
-                        <canvas id="breastVendorChart"></canvas>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
-                        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Oncology ($81M)</h3>
-                        <canvas id="oncologyVendorChart"></canvas>
-                    </div>
-                </div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-around; margin-top: 15px;">
+    <div style="flex: 1; min-width: 260px; max-width: 320px; text-align: center;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Total Overall Revenue (<!-- TOTAL_OVERALL_REV_PLACEHOLDER -->)</h3>
+        <canvas id="totalVendorChart"></canvas>
+    </div>
+    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Cardiology (<!-- CARDIOLOGY_REV_PLACEHOLDER -->)</h3>
+        <canvas id="cardioVendorChart"></canvas>
+    </div>
+    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Pulmonology (<!-- PULMONOLOGY_REV_PLACEHOLDER -->)</h3>
+        <canvas id="pulmoVendorChart"></canvas>
+    </div>
+    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Neurology (<!-- NEUROLOGY_REV_PLACEHOLDER -->)</h3>
+        <canvas id="neuroVendorChart"></canvas>
+    </div>
+    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Breast (<!-- BREAST_REV_PLACEHOLDER -->)</h3>
+        <canvas id="breastVendorChart"></canvas>
+    </div>
+    <div style="flex: 1; min-width: 200px; max-width: 250px; text-align: center;">
+        <h3 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);">Oncology (<!-- ONCOLOGY_REV_PLACEHOLDER -->)</h3>
+        <canvas id="oncologyVendorChart"></canvas>
+    </div>
+</div>
                 <p class="metric-desc" style="margin-top: 15px;">
                     Calculated via public financial filings, openFDA device clearance shares, and CMS Medicare reimbursement volume proxies across top vendors (Siemens Healthineers, GE HealthCare, Philips, Aidoc, and Fujifilm).
                 </p>
@@ -232,28 +251,28 @@
         </p>
     </footer>
 
-    <script>
+<script>
         const monthLabels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
 
         const regionData = {
             global: {
                 outlook: {
                     title: "Sector Outlook Summary (12-18 Month View - Global)",
-                    badge: "Moderately Bullish",
-                    text: "The medical imaging AI sector is rapidly transitioning from algorithm validation to large-scale clinical integration. Structural workforce shortages in radiology and growing scan backlogs provide strong demand resilience against broader macroeconomic headwinds. High central bank interest rates continue to extend hospital capital purchasing cycles, but adoption is steadily sustained by clear reimbursement pathway expansions and integrated platform partnerships with major original equipment manufacturers. Healthcare providers are increasingly shifting their strategic focus from isolated point solutions to enterprise-wide orchestration hubs to streamline diagnostic workflows. Cloud-based deployments are accelerating rapidly due to lower compute overheads and easier IT integration. Although venture capital funding has tightened, creating a clear divide between established market leaders and smaller vendors, overall sector growth remains robust. Positioned to surpass two billion dollars in value, medical imaging AI reflects a permanent structural shift toward data-driven, highly efficient diagnostic care pathways globally."
+                    badge: "<!-- OUTLOOK_BADGE_PLACEHOLDER -->",
+                    text: "<!-- OUTLOOK_SUMMARY_PLACEHOLDER -->"
                 },
-                ticker1: { label: "Central Bank Policy", val: "3.85%", sub: "G7 Weighted Avg", desc: "Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems." },
-                ticker2: { label: "Healthcare Inflation", val: "3.8%", sub: "Global Services CPI", desc: "Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains." },
-                ticker3: { label: "MedTech Index (XLV)", val: "$142.5 (XLV)", sub: "Sector Benchmark", desc: "Reflects healthcare sector equity valuations and broader investment appetite." },
-                ticker4: { label: "Imaging Demand Backlog", val: "4.2M", sub: "Est. Global Pending Scans", desc: "Highlights worldwide clinical backlog volume, underscoring the need for automated triage." },
-                ticker5: { label: "Cloud Inference Index", val: "-8.5%", sub: "Compute Cost YoY", desc: "Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins." },
-                clearances: [18, 24, 29, 35, 40, 48],
-                vcFunding: [210, 280, 250, 310, 390, 420],
-                modalities: [35, 28, 20, 12, 5],
-                totalClearances: "142",
+                ticker1: { label: "Central Bank Policy", val: "<!-- POLICY_RATE_PLACEHOLDER -->", sub: "G7 Weighted Avg", desc: "Sets baseline borrowing costs, shaping capital purchasing cycles across healthcare systems." },
+                ticker2: { label: "Healthcare Inflation", val: "<!-- HEALTHCARE_INFLATION_PLACEHOLDER -->", sub: "Global Services CPI", desc: "Measures operational expenditure pressure, pushing trusts to seek AI efficiency gains." },
+                ticker3: { label: "MedTech Index (XLV)", val: "<!-- MEDTECH_INDEX_PLACEHOLDER -->", sub: "Sector Benchmark", desc: "Reflects healthcare sector equity valuations and broader investment appetite." },
+                ticker4: { label: "Imaging Demand Backlog", val: "<!-- IMAGING_BACKLOG_PLACEHOLDER -->", sub: "Est. Global Pending Scans", desc: "Highlights worldwide clinical backlog volume, underscoring the need for automated triage." },
+                ticker5: { label: "Cloud Inference Index", val: "<!-- CLOUD_INFERENCE_PLACEHOLDER -->", sub: "Compute Cost YoY", desc: "Tracks cloud AI run costs, where dropping expenditure improves vendor operating margins." },
+                clearances: <!-- GLOBAL_CLEARANCES_PLACEHOLDER -->,
+                vcFunding: <!-- GLOBAL_VC_FUNDING_PLACEHOLDER -->,
+                modalities: <!-- GLOBAL_MODALITIES_PLACEHOLDER -->,
+                totalClearances: "<!-- TOTAL_CLEARANCES_PLACEHOLDER -->",
                 indexName: "MSCI World Index",
-                indexData: [3150, 3210, 3280, 3340, 3390, 3420],
-                ratesData: [5.25, 5.00, 4.50, 4.25, 4.00, 3.85],
+                indexData: <!-- GLOBAL_INDEX_DATA_PLACEHOLDER -->,
+                ratesData: <!-- GLOBAL_RATES_DATA_PLACEHOLDER -->,
                 highlights: {
                     title: "Global Operational Highlights",
                     hl1Title: "Demographic Demand:",
@@ -612,47 +631,47 @@
 
         const commonPieOptions = { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#f3f4f6' } } } };
 
-        // Total Revenue Pie Chart
-        new Chart(document.getElementById('totalVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: { labels: vendorLabels, datasets: [{ data: [31, 26, 18, 13, 12], backgroundColor: vendorColors }] },
-            options: commonPieOptions
-        });
+// Total Revenue Pie Chart
+new Chart(document.getElementById('totalVendorChart').getContext('2d'), {
+    type: 'pie',
+    data: { labels: vendorLabels, datasets: [{ data: <!-- TOTAL_VENDOR_DATA_PLACEHOLDER -->, backgroundColor: vendorColors }] },
+    options: commonPieOptions
+});
 
-        // Cardiology Revenue Pie Chart
-        new Chart(document.getElementById('cardioVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: { labels: vendorLabels, datasets: [{ data: [35, 28, 20, 7, 10], backgroundColor: vendorColors }] },
-            options: commonPieOptions
-        });
+// Cardiology Revenue Pie Chart
+new Chart(document.getElementById('cardioVendorChart').getContext('2d'), {
+    type: 'pie',
+    data: { labels: vendorLabels, datasets: [{ data: <!-- CARDIO_VENDOR_DATA_PLACEHOLDER -->, backgroundColor: vendorColors }] },
+    options: commonPieOptions
+});
 
-        // Pulmonology Revenue Pie Chart
-        new Chart(document.getElementById('pulmoVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: { labels: vendorLabels, datasets: [{ data: [24, 22, 15, 25, 14], backgroundColor: vendorColors }] },
-            options: commonPieOptions
-        });
+// Pulmonology Revenue Pie Chart
+new Chart(document.getElementById('pulmoVendorChart').getContext('2d'), {
+    type: 'pie',
+    data: { labels: vendorLabels, datasets: [{ data: <!-- PULMO_VENDOR_DATA_PLACEHOLDER -->, backgroundColor: vendorColors }] },
+    options: commonPieOptions
+});
 
-        // Neurology Revenue Pie Chart
-        new Chart(document.getElementById('neuroVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: { labels: vendorLabels, datasets: [{ data: [29, 27, 17, 15, 12], backgroundColor: vendorColors }] },
-            options: commonPieOptions
-        });
+// Neurology Revenue Pie Chart
+new Chart(document.getElementById('neuroVendorChart').getContext('2d'), {
+    type: 'pie',
+    data: { labels: vendorLabels, datasets: [{ data: <!-- NEURO_VENDOR_DATA_PLACEHOLDER -->, backgroundColor: vendorColors }] },
+    options: commonPieOptions
+});
 
-        // Breast Revenue Pie Chart
-        new Chart(document.getElementById('breastVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: { labels: vendorLabels, datasets: [{ data: [32, 28, 18, 12, 10], backgroundColor: vendorColors }] },
-            options: commonPieOptions
-        });
+// Breast Revenue Pie Chart
+new Chart(document.getElementById('breastVendorChart').getContext('2d'), {
+    type: 'pie',
+    data: { labels: vendorLabels, datasets: [{ data: <!-- BREAST_VENDOR_DATA_PLACEHOLDER -->, backgroundColor: vendorColors }] },
+    options: commonPieOptions
+});
 
-        // Oncology Revenue Pie Chart
-        new Chart(document.getElementById('oncologyVendorChart').getContext('2d'), {
-            type: 'pie',
-            data: { labels: vendorLabels, datasets: [{ data: [22, 25, 28, 15, 10], backgroundColor: vendorColors }] },
-            options: commonPieOptions
-        });
+// Oncology Revenue Pie Chart
+new Chart(document.getElementById('oncologyVendorChart').getContext('2d'), {
+    type: 'pie',
+    data: { labels: vendorLabels, datasets: [{ data: <!-- ONCOLOGY_VENDOR_DATA_PLACEHOLDER -->, backgroundColor: vendorColors }] },
+    options: commonPieOptions
+});
     </script>
 </body>
 </html>
